@@ -19,3 +19,5 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('login');
 });
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
