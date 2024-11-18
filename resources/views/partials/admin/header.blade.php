@@ -9,113 +9,40 @@
     <link rel="stylesheet" href="{{ asset('css/admin/global.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/sidebar.css') }}">
-    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{{ asset('css/admin/databarang.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/datakategori.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/datapesanan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/datauser.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <header>
-        <div class="sidebar">
-            <div class="logo-details">
-                <i class='bx bxl-c-plus-plus icon'></i>
-                <div class="logo_name">CodingLab</div>
-                <i class='bx bx-menu' id="btn"></i>
+        <nav>
+            <div class="hamburger">
+                <i class="fas fa-bars buka"></i>
+                <i class="fas fa-times tutup" style="display: none;"></i>
             </div>
-            <ul class="nav-list">
-                <li>
-                    <i class='bx bx-search'></i>
-                    <input type="text" placeholder="Search...">
-                    <span class="tooltip">Search</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-grid-alt'></i>
-                        <span class="links_name">Dashboard</span>
-                    </a>
-                    <span class="tooltip">Dashboard</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-user'></i>
-                        <span class="links_name">User</span>
-                    </a>
-                    <span class="tooltip">User</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-chat'></i>
-                        <span class="links_name">Messages</span>
-                    </a>
-                    <span class="tooltip">Messages</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-pie-chart-alt-2'></i>
-                        <span class="links_name">Analytics</span>
-                    </a>
-                    <span class="tooltip">Analytics</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-folder'></i>
-                        <span class="links_name">File Manager</span>
-                    </a>
-                    <span class="tooltip">Files</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-cart-alt'></i>
-                        <span class="links_name">Order</span>
-                    </a>
-                    <span class="tooltip">Order</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-heart'></i>
-                        <span class="links_name">Saved</span>
-                    </a>
-                    <span class="tooltip">Saved</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bx-cog'></i>
-                        <span class="links_name">Setting</span>
-                    </a>
-                    <span class="tooltip">Setting</span>
-                </li>
-                <li class="profile">
-                    <div class="profile-details">
-                        <img src="profile.jpg" alt="profileImg">
-                        <div class="name_job">
-                            <div class="name">Prem Shahi</div>
-                            <div class="job">Web designer</div>
-                        </div>
-                    </div>
-                    <i class='bx bx-log-out' id="log_out"></i>
-                </li>
-            </ul>
+            <div class="profil">
+                <img src="{{ asset('img/deafultprofil/deafult.png') }}" alt="profil" class="profil">
+            </div>
+        </nav>
+        <div class="sidebar">
+            <a href="{{ route('dashboard') }}" class="side-list {{ Request::routeIs('dashboard') ? 'active' : '' }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{{ route('databarang') }}" class="side-list {{ Request::routeIs('databarang') ? 'active' : '' }}">
+                <i class="fas fa-box"></i> Data Barang
+            </a>
+            <a href="{{ route('datakategori') }}" class="side-list {{ Request::routeIs('datakategori') ? 'active' : '' }}">
+                <i class="fas fa-tags"></i> Data Kategori
+            </a>
+            <a href="{{ route('datapesanan') }}" class="side-list {{ Request::routeIs('datapesanan') ? 'active' : '' }}">
+                <i class="fas fa-shopping-cart"></i> Data Pesanan
+            </a>
+            <a href="{{ route('datauser') }}" class="side-list {{ Request::routeIs('datauser') ? 'active' : '' }}">
+                <i class="fas fa-users"></i> Data User
+            </a>
         </div>
-        <section class="home-section">
-            <div class="text">Dashboard</div>
-        </section>
     </header>
-    <script>
-        let sidebar = document.querySelector(".sidebar");
-        let closeBtn = document.querySelector("#btn");
-        let searchBtn = document.querySelector(".bx-search");
-        closeBtn.addEventListener("click", ()=>{
-          sidebar.classList.toggle("open");
-          menuBtnChange();//calling the function(optional)
-        });
-        searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
-          sidebar.classList.toggle("open");
-          menuBtnChange(); //calling the function(optional)
-        });
-        // following are the code to change sidebar button(optional)
-        function menuBtnChange() {
-         if(sidebar.classList.contains("open")){
-           closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
-         }else {
-           closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
-         }
-        }
-        </script>
+    <section class="home">
