@@ -30,8 +30,8 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary h4">Data Kategori</h6>
-        <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahKategori">Tambah Kategori</button>
+        <h6 class="m-0 font-weight-bold text-primary h4">Data User</h6>
+        <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahKategori">Tambah User</button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -86,7 +86,7 @@
         <form action="" method="">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Tambah Kategori</h5>
+                    <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Tambah User</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

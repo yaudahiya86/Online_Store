@@ -18,6 +18,10 @@ class AdminController extends Controller
     {
         return view("admin.datakategori");
     }
+    public function datapesanan()
+    {
+        return view("admin.datapesanan");
+    }
     public function datauser()
     {
         return view("admin.datauser");
