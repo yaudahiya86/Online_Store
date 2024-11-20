@@ -1,79 +1,97 @@
 @extends('layout.admin.app')
 @section('title', 'Data Kategori')
 @section('content')
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
-<div class="databarang">
-    <div class="card">
-        <div class="card-header">
-            Data Kategori
-            <button class="tambahbarang" onclick="showModal()">Tambah Kategori</button>
-        </div>
-        <div class="card-body">
-            <div style="overflow-x: auto;">
-                <table class="tabel" id="tabel">
-                    <thead>
-                        <tr>
-                            <th width="20px">No</th>
-                            <th>Kategori</th>
-                            <th width="140px">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Pernikahan</td>
-                            <td>
-                                <button class="edit"><i class="fas fa-edit"></i></button>
-                                <button class="hapus"><i class="fas fa-trash-alt"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<style>
+    /* Menetapkan lebar kolom yang ditentukan di tabel */
+    #dataTable th, #dataTable td {
+        white-space: nowrap;  /* Mencegah teks membungkus ke baris baru */
+    }
+
+    #dataTable th:nth-child(1), #dataTable td:nth-child(1) {
+        width: 50px !important; /* Nama Barang */
+    }
+
+    #dataTable th:nth-child(3), #dataTable td:nth-child(3) {
+        width: 30px !important; /* Stok */
+    }
+    /* Responsif pada layar kecil */
+    @media (max-width: 767px) {
+        /* Buat tabel scrollable */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #dataTable th, #dataTable td {
+            width: auto !important; /* Biarkan lebar otomatis pada layar kecil */
+        }
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary h4">Data Kategori</h6>
+        <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahKategori">Tambah Kategori</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama kategori</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama kategori</th>
+                        <th>Aksi</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr>
+                        <td>1.</td>
+                        <td>Pernikahan</td>
+                        <td>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
-<!-- Modal for Adding Barang -->
-<div class="modal" id="tambahBarangModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            Tambah Barang
-            <span class="close" onclick="closeModal()">&times;</span>
-        </div>
-        <form action="#" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="nama_barang">Nama Kategori</label>
-                <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="submit">Tambah Barang</button>
+<!-- Modal tambah kategori -->
+<div class="modal fade" id="tambahKategori" tabindex="-1" aria-labelledby="tambahKategoriLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="" method="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Tambah Kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Nama kategori</label>
+                        <input type="text" name="kategori" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-<script>
-    new DataTable('#tabel');
-
-    // Show modal function
-    function showModal() {
-        document.getElementById("tambahBarangModal").style.display = "block";
-    }
-
-    // Close modal function
-    function closeModal() {
-        document.getElementById("tambahBarangModal").style.display = "none";
-    }
-
-    // Close modal when clicked outside of the modal
-    window.onclick = function(event) {
-        if (event.target == document.getElementById("tambahBarangModal")) {
-            closeModal();
-        }
-    }
-</script>
 @endsection
