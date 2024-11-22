@@ -20,8 +20,15 @@ Route::get('/', function () {
     return view('login');
 });
 
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-Route::get('/admin/databarang', [AdminController::class, 'databarang'])->name('databarang');
-Route::get('/admin/datakategori', [AdminController::class, 'datakategori'])->name('datakategori');
-Route::get('/admin/datapesanan', [AdminController::class, 'datapesanan'])->name('datapesanan');
-Route::get('/admin/datauser', [AdminController::class, 'datauser'])->name('datauser');
+Route::controller(AdminController::class)->prefix('admin')->group(function () {
+    Route::get('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::get('/databarang', 'databarang')->name('databarang');
+
+    Route::get('/datakategori', 'datakategori')->name('datakategori');
+
+    Route::get('/datapesanan', 'datapesanan')->name('datapesanan');
+    Route::get('/detailpesanan', 'detailpesanan')->name('detailpesanan');
+
+    Route::get('/datauser', 'datauser')->name('datauser');
+});
