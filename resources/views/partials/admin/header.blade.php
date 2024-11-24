@@ -9,7 +9,9 @@
     <meta name="author" content="">
     <title>@yield('title')</title>
     <link href="{{ asset('css/admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
     <link href="{{ asset('css/admin/css/sb-admin-2.css') }}" rel="stylesheet">
     <link href="{{ asset('css/admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 </head>
@@ -18,10 +20,10 @@
     <div id="wrapper">
         <!-- SideBar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-seedling"></i>  <!-- Ikon bunga -->
-                </div>                
+                    <i class="fas fa-seedling"></i> <!-- Ikon bunga -->
+                </div>
                 <div class="sidebar-brand-text mx-3">Flower Store</div>
             </a>
             <hr class="sidebar-divider my-0">
@@ -54,7 +56,7 @@
                     <i class="fas fa-users"></i>
                     <span>Data User</span>
                 </a>
-            </li>                 
+            </li>
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -134,7 +136,8 @@
                                         <div class="small text-gray-500">Emily Fowler · 58m</div>
                                     </div>
                                 </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More
+                                    Messages</a>
                             </div>
                         </li>
                         <div class="topbar-divider d-none d-sm-block"></div>
@@ -142,9 +145,12 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Galih</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    {{ Str::limit(Auth::user()->nama_lengkap, 15) }}
+                                </span>
+
                                 <img class="img-profile rounded-circle"
-                                    src="{{ asset('css/admin/img/undraw_profile.svg') }}">
+                                <img src="{{ asset('css/admin/img/' . Auth::user()->foto) }}" alt="Foto Pengguna">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -154,11 +160,10 @@
                                     Profile
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                    data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
+                                    <button class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </button>
                             </div>
                         </li>
                     </ul>

@@ -20,10 +20,11 @@ return new class extends Migration
 
         // Users table
         Schema::create('users', function (Blueprint $table) {
-            $table->id('id_users');
+            $table->id('id');
             $table->string('nama_lengkap');
             $table->string('email')->unique();
-            $table->string('telephone');
+            $table->string('telephone')->unique();
+            $table->string('foto');
             $table->string('password');
             $table->unsignedBigInteger('id_role');
             $table->timestamps();
