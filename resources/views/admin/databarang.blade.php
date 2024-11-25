@@ -68,6 +68,22 @@
             <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahBarang">Tambah Barang</button>
         </div>
         <div class="card-body">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -93,25 +109,27 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        <tr>
-                            <td>1.</td>
-                            <td>Bucket Bunga Mawar</td>
-                            <td>12</td>
-                            <td>Rp. 100.000.000</td>
-                            <td>Pernikahan</td>
-                            <td>Tidak Aktif</td>
-                            <td>
-                                <button class="btn btn-primary">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        @foreach ($data['join'] as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->nama_barang }}</td>
+                                <td>{{ $item->stok_barang }}</td>
+                                <td>{{ $item->harga_barang }}</td>
+                                <td>{{ $item->kategori }}</td>
+                                <td>{{ $item->status_barang }}</td>
+                                <td>
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -120,7 +138,8 @@
     <!-- Modal tambah barang -->
     <div class="modal fade" id="tambahBarang" tabindex="-1" aria-labelledby="tambahBarangLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="" method="">
+            <form action="{{ route('databarangtambah') }}" method="POST" enctype="multipart/form-data">
+                @csrf
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Tambah Barang</h5>
@@ -131,38 +150,46 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nama Barang</label>
-                            <input type="text" name="nama_barang" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                            <input type="text" name="nama_barang" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp" required>
                         </div>
                         <div class="form-group">
                             <label for="stok">Stok Barang</label>
-                            <input type="number" name="stok_barang" class="form-control" id="stok" aria-describedby="emailHelp">
+                            <input type="number" name="stok_barang" class="form-control" id="stok"
+                                aria-describedby="emailHelp" required>
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga Barang</label>
-                            <input type="number" name="harga_barang" class="form-control" id="harga" aria-describedby="emailHelp">
+                            <input type="text" name="harga_barang" class="form-control" id="harga_barang" required>
+                            <input type="hidden" name="harga_barang_raw" id="harga_barang_raw">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Deskripsi Barang</label>
-                            <textarea name="deskripsi_Barang" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                          </div>
-                          <div class="form-group">
+                            <textarea name="deskripsi_barang" class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
                             <label for="exampleFormControlFile1">Foto barang</label>
-                            <input type="file" class="form-control-file" name="foto_barang" id="exampleFormControlFile1">
-                          </div>
-                          <div class="form-group">
+                            <input type="file" class="form-control-file" name="foto_barang" id="exampleFormControlFile1"
+                                required>
+                        </div>
+                        <div class="form-group">
                             <label for="exampleFormControlSelect1">Kategori barang</label>
-                            <select name="kategori" class="form-control" id="exampleFormControlSelect1">
-                              <option>Pernikahan</option>
-                              <option>Kelulusan</option>
+                            <select name="kategori" class="form-control" id="exampleFormControlSelect1" required>
+                                <option disabled selected>--Pilih Kategori--</option>
+                                @foreach ($data['kategori'] as $item)
+                                    <option value="{{ $item->id_kategori }}">{{ $item->kategori }}</option>
+                                @endforeach
                             </select>
-                          </div>
-                          <div class="form-group">
+                        </div>
+                        <div class="form-group">
                             <label for="exampleFormControlSelect">Status barang</label>
-                            <select name="status" class="form-control" id="exampleFormControlSelect">
-                              <option>Aktif</option>
-                              <option>Tidak Aktif</option>
+                            <select name="status" class="form-control" id="exampleFormControlSelect" required>
+                                <option disabled selected>--Pilih Status Barang--</option>
+                                @foreach ($data['status_barang'] as $item)
+                                    <option value="{{ $item->id_status_barang }}">{{ $item->status_barang }}</option>
+                                @endforeach
                             </select>
-                          </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -173,4 +200,32 @@
         </div>
     </div>
 
+@endsection
+@section('script')
+    <script>
+        const hargaInput = document.getElementById('harga_barang');
+        const hargaRawInput = document.getElementById('harga_barang_raw');
+
+        hargaInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^,\d]/g, ''); // Hapus karakter non-angka
+            let numberValue = parseInt(value, 10) || 0;
+
+            // Simpan nilai raw ke input hidden
+            hargaRawInput.value = numberValue;
+
+            // Format angka ke Rupiah
+            e.target.value = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(numberValue);
+        });
+        $(document).ready(function() {
+            setTimeout(function() {
+                $(".auto-dismiss").fadeOut("slow", function() {
+                    $(this).remove();
+                });
+            }, 5000); // 5000ms = 5 seconds
+        });
+    </script>
 @endsection

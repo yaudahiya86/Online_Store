@@ -29,4 +29,11 @@ class AdminModel extends Model
     {
         return DB::table($table)->where($where)->delete();
     }
+    public static function JoinDataBarang()
+    {
+        return DB::table('barang')
+        ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_barang')
+        ->join('status_barang', 'status_barang.id_status_barang', '=', 'barang.id_status_barang')
+        ->get();
+    }
 }
