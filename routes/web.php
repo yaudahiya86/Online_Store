@@ -34,6 +34,9 @@ Route::controller(AdminController::class)
 
         Route::get('/datakategori', 'datakategori')->name('datakategori');
         Route::post('/datakategori/tambah', 'datakategoritambah')->name('datakategoritambah');
+        Route::get('/datakategori/edit/{id}', 'datakategoriedit')->name('datakategoriedit');
+        Route::put('/datakategori/update/{id}', 'datakategoriupdate')->name('datakategoriupdate');
+
         Route::delete('/datakategori/hapus{id}', 'datakategorihapus')->name('datakategorihapus');
 
 

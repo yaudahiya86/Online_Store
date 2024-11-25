@@ -45,6 +45,14 @@
                     </button>
                 </div>
             @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -67,7 +75,9 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->kategori }}</td>
                                 <td>
-                                    <button class="btn btn-warning">
+                                    <button class="btn btn-warning btn-edit" data-id="{{ $item->id_kategori }}"
+                                        data-url="{{ route('datakategoriedit', $item->id_kategori) }}" data-toggle="modal"
+                                        data-target="#editKategori">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button class="btn btn-danger btn-hapus" data-id="{{ $item->id_kategori }}"
@@ -115,12 +125,70 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="editKategori" tabindex="-1" aria-labelledby="editKategoriLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" id="formEditKategori">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-primary font-weight-bold" id="editKategoriLabel">Edit Kategori</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editNamaKategori">Nama kategori</label>
+                            <input type="text" name="kategori" class="form-control" id="editNamaKategori" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 @endsection
 
 @section('script')
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const url = this.dataset.url;
+
+        // Clear previous form state
+        document.getElementById('formEditKategori').reset();
+
+        // Fetch category data via AJAX
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Kategori tidak ditemukan');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Populate modal form with data
+                document.getElementById('editNamaKategori').value = data.kategori;
+
+                // Update form action dynamically
+                document.getElementById('formEditKategori').action = `datakategori/update/${id}`;
+            })
+            .catch(error => {
+                console.error(error);
+                Swal.fire('Error', 'Gagal mengambil data kategori', 'error');
+            });
+    });
+});
         document.querySelectorAll('.btn-hapus').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.dataset.id;

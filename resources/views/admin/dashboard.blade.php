@@ -108,3 +108,14 @@
         </div>
     </div>
 @endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $(".auto-dismiss").fadeOut("slow", function() {
+                    $(this).remove();
+                });
+            }, 5000); // 5000ms = 5 seconds
+        });
+    </script>
+@endsection

@@ -39,7 +39,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->timestamps();
 
-            $table->foreign('id_users')->references('id_users')->on('users')->onDelete('cascade');
+            $table->foreign('id_users')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Category table
@@ -79,7 +79,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barang');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('id_users')->on('users')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_barang')->references('id_barang')->on('barang')->onDelete('cascade');
         });
 
@@ -98,7 +98,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_status_pesanan');
             $table->timestamps();
 
-            $table->foreign('id_users')->references('id_users')->on('users')->onDelete('cascade');
+            $table->foreign('id_users')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_status_pesanan')->references('id_status_pesanan')->on('status_pesanan')->onDelete('cascade');
         });
 
