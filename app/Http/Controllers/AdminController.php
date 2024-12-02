@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminModel;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
 
 class AdminController extends Controller
 {
@@ -69,6 +73,33 @@ class AdminController extends Controller
         }
 
         return redirect()->route('databarang')->with('success', 'Barang berhasil ditambahkan.');
+    }
+    public function databarangview($id)
+    {
+        // Fetch data using the model method
+        $cek = AdminModel::JoinDataBarangById($id);
+
+        // Check if data exists
+        if (!$cek) {
+            return response()->json([
+                'error' => 'Barang tidak ditemukan'
+            ], 404);
+        }
+
+        // Format response to include relevant fields
+        $data = [
+            'id_barang' => $cek->id_barang,
+            'nama_barang' => $cek->nama_barang,
+            'stok_barang' => $cek->stok_barang,
+            'harga_barang' => $cek->harga_barang,
+            'deskripsi_barang' => $cek->deskripsi_barang,
+            'foto_barang' => asset('img/barang_img/' . $cek->foto_barang), // Ensure the image path is correct
+            'kategori' => $cek->kategori,
+            'status_barang' => $cek->status_barang,
+        ];
+
+        // Return the formatted data
+        return response()->json($data, 200);
     }
 
 
@@ -151,6 +182,67 @@ class AdminController extends Controller
 
     public function datauser()
     {
-        return view("admin.datauser");
+        $data['role'] = AdminModel::GetData('role');
+        $data['user'] = AdminModel::JoinUser();
+        // dd($data);
+        return view("admin.datauser", compact('data'));
+    }
+    public function datausertambah(Request $request)
+    {
+        // dd($request->all());
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'telephone' => 'required|string|max:15|unique:users,telephone',
+            'password' => 'required|string|min:6',
+            'role' => 'string',
+            'foto' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        $uploadPath = public_path('img/profil_user');
+
+        if (!File::isDirectory($uploadPath)) {
+            File::makeDirectory($uploadPath, 0777, true, true);
+        }
+        if ($request->file('foto') == null) {
+            User::create([
+                'nama_lengkap' => $request->nama_lengkap,
+                'email' => $request->email,
+                'telephone' => $request->telephone,
+                'foto' => 'deafultpp.svg',
+                'id_role' => 2,
+                'password' => Hash::make($request->password),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        } else {
+            $image = $request->file('foto');
+            $imageName = $image->hashName();
+
+            try {
+                $image->move($uploadPath, $imageName);
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Gagal mengunggah foto barang: ' . $e->getMessage());
+            }
+            User::create([
+                'nama_lengkap' => $request->nama_lengkap,
+                'email' => $request->email,
+                'telephone' => $request->telephone,
+                'foto' => $imageName,
+                'id_role' => $request->role,
+                'password' => Hash::make($request->password),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        }
+
+        // Simpan data ke database
+
+
+        // Redirect ke halaman login atau dashboard
+        return redirect()->route('datauser')->with('success', 'Tambah user berhasil!!');
     }
 }

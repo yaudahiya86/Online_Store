@@ -161,34 +161,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.querySelectorAll('.btn-edit').forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        const url = this.dataset.url;
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const url = this.dataset.url;
 
-        // Clear previous form state
-        document.getElementById('formEditKategori').reset();
+                // Clear previous form state
+                document.getElementById('formEditKategori').reset();
 
-        // Fetch category data via AJAX
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Kategori tidak ditemukan');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Populate modal form with data
-                document.getElementById('editNamaKategori').value = data.kategori;
+                // Fetch category data via AJAX
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Kategori tidak ditemukan');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Populate modal form with data
+                        document.getElementById('editNamaKategori').value = data.kategori;
 
-                // Update form action dynamically
-                document.getElementById('formEditKategori').action = `datakategori/update/${id}`;
-            })
-            .catch(error => {
-                console.error(error);
-                Swal.fire('Error', 'Gagal mengambil data kategori', 'error');
+                        // Update form action dynamically
+                        document.getElementById('formEditKategori').action =
+                        `datakategori/update/${id}`;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        Swal.fire('Error', 'Gagal mengambil data kategori', 'error');
+                    });
             });
-    });
-});
+        });
         document.querySelectorAll('.btn-hapus').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.dataset.id;
