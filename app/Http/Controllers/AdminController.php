@@ -184,7 +184,6 @@ class AdminController extends Controller
     {
         $data['role'] = AdminModel::GetData('role');
         $data['user'] = AdminModel::JoinUser();
-        // dd($data);
         return view("admin.datauser", compact('data'));
     }
     public function datausertambah(Request $request)
