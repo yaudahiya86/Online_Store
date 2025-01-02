@@ -1,0 +1,197 @@
+/* Import font */
+@import url('https://fonts.googleapis.com/css2?family=Kavoon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navbar styling */
+nav {
+    height: 70px;
+    background: linear-gradient(45deg, #FF69B4, #FF1493);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+nav h1 {
+    font-family: 'Kavoon', cursive;
+    font-size: 34px;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    -webkit-text-stroke: 0.6px black;
+}
+
+nav input[type="search"] {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    width: 400px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+nav input[type="search"]:focus {
+    width: 450px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+nav input[type="search"]::placeholder {
+    color: #FF69B4;
+    font-style: italic;
+}
+
+.profile-menu {
+    position: relative;
+}
+
+.profile-menu img {
+    border-radius: 50%;
+    border: 2px solid white;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.profile-menu img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profile-menu .menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    list-style: none;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 10;
+}
+
+.profile-menu .menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #333;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.profile-menu .menu li:hover {
+    background: #FF69B4;
+    color: white;
+    border-radius: 5px;
+}
+nav .menu li a {
+    display: flex;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+nav .menu li a i {
+    margin-right: 8px;
+    color: #FF69B4;
+}
+
+nav .menu li a:hover {
+    color: #FF69B4;
+}
+
+/* Show menu on hover */
+.profile-menu:hover .menu {
+    display: block;
+    margin-top: -20px;
+}
+
+/* Responsive Styling */
+@media screen and (max-width: 768px) {
+    nav input[type="search"] {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    nav h1 {
+        font-size: 25px;
+    }
+
+    nav input[type="search"] {
+        width: 150px;
+    }
+}
+
+
+footer section{
+    padding: 20px;
+    background-color: #003366;
+}
+footer section h2{
+    font-family: 'Kavoon', cursive;
+    color: white;
+    letter-spacing: 2px; /* Memberi jarak antar huruf */
+    font-size: 30px;
+}
+footer section .col{
+    display: flex;
+}
+footer section .col .row{
+    width: 100%;
+}
+footer section .col .kiri{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5px;
+}
+footer section .col .kiri .column b{
+    font-size: 40px;
+    text-decoration: underline;
+    color: white;
+}
+footer section .col .kiri .column ul li{
+    padding: 15px 0;
+    color: white;
+}
+footer section .col .kiri .column ul li a{
+    color: white;
+    text-decoration: none;
+}
+footer section .col .kiri .column ul li a:hover{
+    color: gray;
+}
+footer .bawah{
+    height: 50px;
+    background-color: #001E3C;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media screen and (max-width: 600px) {
+    footer section .col {
+        display: flex;
+        flex-direction: column;
+    }
+}

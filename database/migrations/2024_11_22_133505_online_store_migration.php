@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('telephone')->unique();
             $table->string('foto');
+            $table->string('alamat');
             $table->string('password');
             $table->unsignedBigInteger('id_role');
             $table->timestamps();
@@ -32,27 +33,10 @@ return new class extends Migration
             $table->foreign('id_role')->references('id_role')->on('role')->onDelete('cascade');
         });
 
-        // Address table
-        Schema::create('alamat', function (Blueprint $table) {
-            $table->id('id_alamat');
-            $table->unsignedBigInteger('id_users');
-            $table->text('alamat');
-            $table->timestamps();
-
-            $table->foreign('id_users')->references('id')->on('users')->onDelete('cascade');
-        });
-
         // Category table
         Schema::create('kategori', function (Blueprint $table) {
             $table->id('id_kategori');
             $table->string('kategori');
-            $table->timestamps();
-        });
-
-        // Order Status table
-        Schema::create('status_barang', function (Blueprint $table) {
-            $table->id('id_status_barang');
-            $table->string('status_barang');
             $table->timestamps();
         });
 
@@ -65,11 +49,10 @@ return new class extends Migration
             $table->integer('stok_barang');
             $table->string('foto_barang');
             $table->unsignedBigInteger('id_kategori');
-            $table->unsignedBigInteger('id_status_barang');
+            $table->enum('status_barang', ['Aktif', 'Tidak Aktif']);
             $table->timestamps();
 
             $table->foreign('id_kategori')->references('id_kategori')->on('kategori')->onDelete('cascade');
-            $table->foreign('id_status_barang')->references('id_status_barang')->on('status_barang')->onDelete('cascade');
         });
 
          // Cart table
@@ -83,23 +66,16 @@ return new class extends Migration
             $table->foreign('id_barang')->references('id_barang')->on('barang')->onDelete('cascade');
         });
 
-        // Order Status table
-        Schema::create('status_pesanan', function (Blueprint $table) {
-            $table->id('id_status_pesanan');
-            $table->string('status_pesanan');
-            $table->timestamps();
-        });
-
         // Orders table
         Schema::create('pesanan', function (Blueprint $table) {
             $table->id('id_pesanan');
-            $table->unsignedBigInteger('id_users');
+            $table->string('nama_lengkap');
+            $table->string('telephone');
+            $table->string('alamat');
+            $table->string('kode_pos');
             $table->integer('total_harga_semua'); // Menggunakan integer untuk total harga
-            $table->unsignedBigInteger('id_status_pesanan');
+            $table->enum('status_pesanan', ['Dikemas', 'Dikirim', 'diterima']);
             $table->timestamps();
-
-            $table->foreign('id_users')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_status_pesanan')->references('id_status_pesanan')->on('status_pesanan')->onDelete('cascade');
         });
 
         // Order Items table
@@ -127,8 +103,7 @@ return new class extends Migration
             $table->id('id_pembayaran');
             $table->unsignedBigInteger('id_pesanan');
             $table->unsignedBigInteger('id_metode_pembayaran');
-            $table->date('tanggal_pembayaran');
-            $table->timestamps();
+            $table->timestamp('tanggal_pembayaran')->nullable();
 
             $table->foreign('id_pesanan')->references('id_pesanan')->on('pesanan')->onDelete('cascade');
             $table->foreign('id_metode_pembayaran')->references('id_metode_pembayaran')->on('metode_pembayaran')->onDelete('cascade');
@@ -147,9 +122,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pesanan');
             $table->unsignedBigInteger('id_expedisi_pengiriman');
             $table->string('resi_pengiriman');
-            $table->date('tanggal_pengiriman');
-            $table->date('tanggal_menerima');
-            $table->timestamps();
+            $table->timestamp('tanggal_pengiriman')->nullable();
+            $table->timestamp('tanggal_menerima')->nullable();
 
             $table->foreign('id_pesanan')->references('id_pesanan')->on('pesanan')->onDelete('cascade');
             $table->foreign('id_expedisi_pengiriman')->references('id_expedisi_pengiriman')->on('expedisi_pengiriman')->onDelete('cascade');
@@ -167,12 +141,9 @@ return new class extends Migration
         Schema::dropIfExists('metode_pembayaran');
         Schema::dropIfExists('list_pesanan');
         Schema::dropIfExists('pesanan');
-        Schema::dropIfExists('status_pesanan');
         Schema::dropIfExists('barang');
         Schema::dropIfExists('kategori');
-        Schema::dropIfExists('status_barang');
         Schema::dropIfExists('keranjang');
-        Schema::dropIfExists('alamat');
         Schema::dropIfExists('users');
         Schema::dropIfExists('role');
     }

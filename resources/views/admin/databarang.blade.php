@@ -123,10 +123,13 @@
                                         data-target="#viewBarang">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-warning">
+                                    <button class="btn btn-edit btn-warning" data-id="{{ $item->id_barang }}"
+                                        data-url="{{ route('databarangview', $item->id_barang) }}" data-toggle="modal"
+                                        data-target="#editBarang">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-danger">
+                                    <button class="btn btn-hapus btn-danger" data-id="{{ $item->id_barang }}"
+                                        data-name={{ $item->nama_barang }}>
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -187,9 +190,8 @@
                             <label for="exampleFormControlSelect">Status barang</label>
                             <select name="status" class="form-control" id="exampleFormControlSelect" required>
                                 <option disabled selected>--Pilih Status Barang--</option>
-                                @foreach ($data['status_barang'] as $item)
-                                    <option value="{{ $item->id_status_barang }}">{{ $item->status_barang }}</option>
-                                @endforeach
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
                             </select>
                         </div>
                     </div>
@@ -201,14 +203,15 @@
             </form>
         </div>
     </div>
-    <!-- Modal view barang -->
-    <div class="modal fade" id="viewBarang" tabindex="-1" aria-labelledby="viewBarangLabel" aria-hidden="true">
+    <!-- Modal edit barang -->
+    <div class="modal fade" id="editBarang" tabindex="-1" aria-labelledby="editBarangLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('databarangtambah') }}" method="POST" enctype="multipart/form-data">
+            <form action="#" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">View Barang</h5>
+                        <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Edit Barang</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -216,30 +219,32 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nama Barang</label>
-                            <input type="text" name="nama_barang" class="form-control" id="namaview"
-                                aria-describedby="emailHelp" readonly>
+                            <input type="text" name="nama_barang" class="form-control" id="nama_barang"
+                                aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
                             <label for="stok">Stok Barang</label>
-                            <input type="number" name="stok_barang" class="form-control" id="stokview"
-                                aria-describedby="emailHelp" readonly>
+                            <input type="number" name="stok_barang" class="form-control" id="stok_barang"
+                                aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga Barang</label>
-                            <input type="text" name="harga_barang" class="form-control" id="hargaview" readonly>
+                            <input type="text" name="harga_barang" class="form-control" id="harga_barang">
                             <input type="hidden" name="harga_barang_raw" id="harga_barang_raw">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Deskripsi Barang</label>
-                            <textarea name="deskripsi_barang" class="form-control" id="deskripsiview" rows="3" readonly></textarea>
+                            <textarea name="deskripsi_barang" class="form-control" id="deskripsi_barang" rows="3"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlFile1">Foto barang</label>
                             <img src="" id="fotoview" alt="">
+                            <input type="file" class="form-control-file" name="foto_barang"
+                                id="exampleFormControlFile1">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Kategori barang</label>
-                            <select name="kategori" class="form-control" id="exampleFormControlSelect1" readonly>
+                            <select name="kategori" class="form-control" id="kategori">
                                 <option disabled selected>--Pilih Kategori--</option>
                                 @foreach ($data['kategori'] as $item)
                                     <option value="{{ $item->id_kategori }}">{{ $item->kategori }}</option>
@@ -248,119 +253,97 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect">Status barang</label>
-                            <select name="status" class="form-control" id="exampleFormControlSelect" readonly>
+                            <select name="status" class="form-control" id="status">
                                 <option disabled selected>--Pilih Status Barang--</option>
-                                @foreach ($data['status_barang'] as $item)
-                                    <option value="{{ $item->id_status_barang }}">{{ $item->status_barang }}</option>
-                                @endforeach
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
 @endsection
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const hargaInput = document.getElementById('harga_barang');
-        const hargaRawInput = document.getElementById('harga_barang_raw');
-
-        hargaInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^,\d]/g, ''); // Hapus karakter non-angka
-            let numberValue = parseInt(value, 10) || 0;
-
-            // Simpan nilai raw ke input hidden
-            hargaRawInput.value = numberValue;
-
-            // Format angka ke Rupiah
-            e.target.value = new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(numberValue);
-        });
         $(document).ready(function() {
-            setTimeout(function() {
-                $(".auto-dismiss").fadeOut("slow", function() {
-                    $(this).remove();
-                });
-            }, 5000); // 5000ms = 5 seconds
-        });
-    </script>
+            // When the 'Edit' button is clicked
+            $('.btn-edit').click(function() {
+                const id = $(this).data('id');
+                const url = $(this).data('url');
 
-    <script>
-        document.querySelectorAll('.btn-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const url = this.dataset.url;
-
-                // Clear previous modal content
-                document.getElementById('namaview').value = '';
-                document.getElementById('stokview').value = '';
-                document.getElementById('hargaview').value = '';
-                document.getElementById('deskripsiview').value = '';
-                document.getElementById('fotoview').src = '';
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Data barang tidak ditemukan');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Populate modal fields
-                        document.getElementById('namaview').value = data.nama_barang;
-                        document.getElementById('stokview').value = data.stok_barang;
-                        document.getElementById('hargaview').value = new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        }).format(data.harga_barang);
-                        document.getElementById('deskripsiview').value = data.deskripsi_barang;
-                        document.getElementById('fotoview').src = data.foto_barang;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        Swal.fire('Error', 'Gagal mengambil data barang', 'error');
-                    });
-            });
-        });
-
-        document.querySelectorAll('.btn-hapus').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: `Kategori "${name}" akan dihapus secara permanen!`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(`form-hapus-${id}`).submit();
+                // Fetch the data from the server
+                $.ajax({
+                    url: url, // route to fetch the data based on id
+                    method: 'GET',
+                    success: function(data) {
+                        // Populate the modal fields with the data returned from the server
+                        $('#editBarang form').attr('action', '/databarang/' +
+                        id); // Set dynamic action for the form
+                        $('#nama_barang').val(data.nama_barang);
+                        $('#stok_barang').val(data.stok_barang);
+                        $('#harga_barang').val(data.harga_barang);
+                        $('#deskripsi_barang').val(data.deskripsi_barang);
+                        $('#foto_barang').attr('src', data.foto_barang); // Display existing photo
+                        $('#kategori').val(data.id_kategori);
+                        $('#status').val(data.status_barang);
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Tidak dapat mengambil data', 'error');
                     }
                 });
             });
-        });
-        // Automatically dismiss alerts after 5 seconds
-        $(document).ready(function() {
-            setTimeout(function() {
-                $(".auto-dismiss").fadeOut("slow", function() {
-                    $(this).remove();
+
+            // Handle form submission for editing (AJAX)
+            $('#editBarang form').submit(function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'PUT',
+                    data: formData,
+                    processData: false, // Don't process the data
+                    contentType: false, // Don't set content type
+                    success: function(response) {
+                        Swal.fire('Berhasil', 'Data barang berhasil diperbarui', 'success')
+                            .then(() => {
+                                // Close the modal and reload the table or page
+                                $('#editBarang').modal('hide');
+                                location.reload();
+                            });
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Gagal memperbarui data barang', 'error');
+                    }
                 });
-            }, 5000); // 5000ms = 5 seconds
+            });
+
+            // Format harga input in Rupiah
+            const hargaInput = $('#harga_barang');
+            const hargaRawInput = $('#harga_barang_raw');
+
+            hargaInput.on('input', function(e) {
+                let value = e.target.value.replace(/[^,\d]/g, ''); // Remove non-numeric characters
+                let numberValue = parseInt(value, 10) || 0;
+
+                // Store raw value
+                hargaRawInput.val(numberValue);
+
+                // Format number as currency (Rupiah)
+                e.target.value = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(numberValue);
+            });
         });
     </script>
 @endsection

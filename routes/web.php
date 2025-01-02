@@ -32,6 +32,7 @@ Route::controller(AdminController::class)
         Route::get('/databarang', 'databarang')->name('databarang');
         Route::post('/databarang/tambah', 'databarangtambah')->name('databarangtambah');
         Route::get('/databarang/view/{id}', 'databarangview')->name('databarangview');
+        Route::put('/databarang/edit/{id}', 'databarangedit')->name('databarangedit');
 
 
         Route::get('/datakategori', 'datakategori')->name('datakategori');
@@ -50,3 +51,5 @@ Route::controller(AdminController::class)
         Route::get('/datauser', 'datauser')->name('datauser');
         Route::post('/datauser/tambah', 'datausertambah')->name('datausertambah');
     });
+
+Route::get('/beranda', [UserController::class, 'beranda'])->name('beranda');

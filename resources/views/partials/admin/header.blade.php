@@ -150,7 +150,11 @@
                                 </span>
 
                                 <img class="img-profile rounded-circle"
+                                @if (Auth::user()->foto == 'deafultpp.svg')
                                 <img src="{{ asset('css/admin/img/' . Auth::user()->foto) }}" alt="Foto Pengguna">
+                                @else
+                                <img src="{{ asset('img/profil_user/' . Auth::user()->foto) }}" alt="Foto Pengguna">
+                                @endif
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

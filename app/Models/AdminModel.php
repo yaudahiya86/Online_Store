@@ -33,14 +33,12 @@ class AdminModel extends Model
     {
         return DB::table('barang')
         ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_barang')
-        ->join('status_barang', 'status_barang.id_status_barang', '=', 'barang.id_status_barang')
         ->get();
     }
     public static function JoinDataBarangById($where)
     {
         return DB::table('barang')->where('id_barang', $where)
         ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_barang')
-        ->join('status_barang', 'status_barang.id_status_barang', '=', 'barang.id_status_barang')
         ->first();
     }
     public static function JoinUser()

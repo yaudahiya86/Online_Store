@@ -24,7 +24,6 @@ class AdminController extends Controller
     public function databarang()
     {
         $data['kategori'] = AdminModel::GetData('kategori');
-        $data['status_barang'] = AdminModel::GetData('status_barang');
         $data['join'] = AdminModel::JoinDataBarang();
         // dd($data['join']);
         return view("admin.databarang", compact('data'));
@@ -38,7 +37,7 @@ class AdminController extends Controller
             'deskripsi_barang' => 'required|string|max:1000',
             'foto_barang' => 'required|file|mimes:jpg,jpeg,png|max:2048',
             'kategori' => 'required|integer',
-            'status' => 'required|integer',
+            'status' => 'required',
         ]);
 
         $uploadPath = public_path('img/barang_img');
@@ -48,7 +47,8 @@ class AdminController extends Controller
         }
 
         $image = $request->file('foto_barang');
-        $imageName = $image->hashName();
+        $imageName = $image->getClientOriginalName();
+        // dd($imageName);
 
         try {
             $image->move($uploadPath, $imageName);
@@ -63,9 +63,9 @@ class AdminController extends Controller
             'deskripsi_barang' => $request->deskripsi_barang,
             'foto_barang' => $imageName,
             'id_kategori' => $request->kategori,
-            'id_status_barang' => $request->status,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'status_barang' => $request->status,
+            'created_at' => Carbon::now('Asia/Jakarta'),
+            'updated_at' => Carbon::now('Asia/Jakarta')
         ]);
 
         if (!$cek) {
@@ -100,6 +100,10 @@ class AdminController extends Controller
 
         // Return the formatted data
         return response()->json($data, 200);
+    }
+    public function databarangedit(Request $request, $id)
+    {
+        dd($request->all());
     }
 
 
@@ -214,8 +218,8 @@ class AdminController extends Controller
                 'foto' => 'deafultpp.svg',
                 'id_role' => 2,
                 'password' => Hash::make($request->password),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'created_at' => Carbon::now('Asia/Jakarta'),
+                'updated_at' => Carbon::now('Asia/Jakarta')
             ]);
         } else {
             $image = $request->file('foto');
@@ -233,8 +237,8 @@ class AdminController extends Controller
                 'foto' => $imageName,
                 'id_role' => $request->role,
                 'password' => Hash::make($request->password),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'created_at' => Carbon::now('Asia/Jakarta'),
+                'updated_at' => Carbon::now('Asia/Jakarta')
             ]);
         }
 
