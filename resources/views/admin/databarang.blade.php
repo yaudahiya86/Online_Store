@@ -166,7 +166,6 @@
                         <div class="form-group">
                             <label for="harga">Harga Barang</label>
                             <input type="text" name="harga_barang" class="form-control" id="harga_barang" required>
-                            <input type="hidden" name="harga_barang_raw" id="harga_barang_raw">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Deskripsi Barang</label>
@@ -230,7 +229,6 @@
                         <div class="form-group">
                             <label for="harga">Harga Barang</label>
                             <input type="text" name="harga_barang" class="form-control" id="harga_barang">
-                            <input type="hidden" name="harga_barang_raw" id="harga_barang_raw">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Deskripsi Barang</label>
@@ -238,7 +236,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlFile1">Foto barang</label>
-                            <img src="" id="fotoview" alt="">
+                            <img src="" id="fotoview" alt="" width="60px">
                             <input type="file" class="form-control-file" name="foto_barang"
                                 id="exampleFormControlFile1">
                         </div>
@@ -268,82 +266,224 @@
             </form>
         </div>
     </div>
+    <div class="modal fade" id="viewBarang" tabindex="-1" role="dialog" aria-labelledby="viewBarangLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewBarangLabel">Detail Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img id="fotoview" src="" class="img-fluid" alt="Foto Barang"
+                                style="display: none;" />
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Nama Barang</th>
+                                    <td id="nama_barang"></td>
+                                </tr>
+                                <tr>
+                                    <th>Stok</th>
+                                    <td id="stok_barang"></td>
+                                </tr>
+                                <tr>
+                                    <th>Harga</th>
+                                    <td id="harga_barang"></td>
+                                </tr>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <td id="kategori"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="status"></td>
+                                </tr>
+                                <tr>
+                                    <th>Deskripsi</th>
+                                    <td id="deskripsi_barang"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // When the 'Edit' button is clicked
-            $('.btn-edit').click(function() {
-                const id = $(this).data('id');
-                const url = $(this).data('url');
+            $('.btn-edit').on('click', function() {
+                let url = $(this).data('url'); // URL endpoint untuk get data barang
 
-                // Fetch the data from the server
+                // Lakukan AJAX request untuk mendapatkan data barang
                 $.ajax({
-                    url: url, // route to fetch the data based on id
-                    method: 'GET',
-                    success: function(data) {
-                        // Populate the modal fields with the data returned from the server
-                        $('#editBarang form').attr('action', '/databarang/' +
-                        id); // Set dynamic action for the form
-                        $('#nama_barang').val(data.nama_barang);
-                        $('#stok_barang').val(data.stok_barang);
-                        $('#harga_barang').val(data.harga_barang);
-                        $('#deskripsi_barang').val(data.deskripsi_barang);
-                        $('#foto_barang').attr('src', data.foto_barang); // Display existing photo
-                        $('#kategori').val(data.id_kategori);
-                        $('#status').val(data.status_barang);
-                    },
-                    error: function() {
-                        Swal.fire('Error', 'Tidak dapat mengambil data', 'error');
-                    }
-                });
-            });
-
-            // Handle form submission for editing (AJAX)
-            $('#editBarang form').submit(function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: 'PUT',
-                    data: formData,
-                    processData: false, // Don't process the data
-                    contentType: false, // Don't set content type
+                    url: url,
+                    type: 'GET',
                     success: function(response) {
-                        Swal.fire('Berhasil', 'Data barang berhasil diperbarui', 'success')
-                            .then(() => {
-                                // Close the modal and reload the table or page
-                                $('#editBarang').modal('hide');
-                                location.reload();
-                            });
+                        // Isi data ke dalam modal edit
+                        $('#editBarang #nama_barang').val(response.nama_barang);
+                        $('#editBarang #stok_barang').val(response.stok_barang);
+                        $('#editBarang #harga_barang').val(formatRupiah(response.harga_barang
+                            .toString(), 'Rp. '));
+                        $('#editBarang #harga_barang_raw').val(response
+                            .harga_barang); // Simpan harga asli
+                        $('#editBarang #deskripsi_barang').val(response.deskripsi_barang);
+
+                        // Set selected kategori
+                        $('#editBarang #kategori option').each(function() {
+                            if ($(this).val() == response.id_kategori) {
+                                $(this).attr('selected', 'selected');
+                            } else {
+                                $(this).removeAttr('selected');
+                            }
+                        });
+
+                        // Set selected status
+                        $('#editBarang #status option').each(function() {
+                            if ($(this).val() == response.status_barang) {
+                                $(this).attr('selected', 'selected');
+                            } else {
+                                $(this).removeAttr('selected');
+                            }
+                        });
+
+                        // Tampilkan foto jika ada
+                        if (response.foto_barang) {
+                            $('#editBarang #fotoview').attr('src', response.foto_barang);
+                        } else {
+                            $('#editBarang #fotoview').attr('src', '');
+                        }
+
+                        $('#editBarang form').attr('action',
+                            `{{ route('databarangedit', ':id') }}`.replace(':id', response
+                                .id_barang));
                     },
-                    error: function() {
-                        Swal.fire('Error', 'Gagal memperbarui data barang', 'error');
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Gagal memuat data barang', 'error');
+                    }
+                });
+            });
+            $('.btn-view').on('click', function() {
+                let url = $(this).data('url'); // URL endpoint untuk get data barang
+
+                // Lakukan AJAX request untuk mendapatkan data barang
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response) {
+                            // Isi data ke dalam modal view
+                            $('#viewBarang #nama_barang').text(response.nama_barang);
+                            $('#viewBarang #stok_barang').text(response.stok_barang);
+                            $('#viewBarang #harga_barang').text(formatRupiah(response
+                                .harga_barang.toString(), 'Rp. '));
+                            $('#viewBarang #deskripsi_barang').text(response.deskripsi_barang);
+                            $('#viewBarang #kategori').text(response.kategori);
+                            $('#viewBarang #status').text(response.status_barang == 1 ?
+                                'Aktif' : 'Tidak Aktif');
+
+                            // Tampilkan foto jika ada
+                            if (response.foto_barang) {
+                                $('#viewBarang #fotoview').attr('src', response.foto_barang)
+                                    .show();
+                            } else {
+                                $('#viewBarang #fotoview').hide();
+                            }
+                        } else {
+                            Swal.fire('Error', 'Data barang tidak ditemukan', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Gagal memuat data barang', 'error');
+                    }
+                });
+            });
+            $('.btn-hapus').on('click', function() {
+                let id = $(this).data('id'); // ID barang yang akan dihapus
+                let name = $(this).data('name'); // Nama barang untuk ditampilkan di dialog
+
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: `Apakah Anda yakin ingin menghapus barang "${name}"?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Lakukan AJAX request untuk menghapus barang
+                        $.ajax({
+                            url: `{{ route('databaranghapus', ':id') }}`.replace(':id',
+                                id), // Generate URL dari name route
+                            type: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content') // Laravel CSRF token
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Berhasil!',
+                                        'Barang telah dihapus.',
+                                        'success'
+                                    ).then(() => {
+                                        // Reload halaman atau tabel setelah data dihapus
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Gagal!', response.message ||
+                                        'Gagal menghapus barang.', 'error');
+                                }
+                            },
+                            error: function(xhr) {
+                                console.error(xhr.responseText);
+                                Swal.fire('Error!',
+                                    'Terjadi kesalahan saat menghapus barang.',
+                                    'error');
+                            }
+                        });
                     }
                 });
             });
 
-            // Format harga input in Rupiah
-            const hargaInput = $('#harga_barang');
-            const hargaRawInput = $('#harga_barang_raw');
 
-            hargaInput.on('input', function(e) {
-                let value = e.target.value.replace(/[^,\d]/g, ''); // Remove non-numeric characters
-                let numberValue = parseInt(value, 10) || 0;
-
-                // Store raw value
-                hargaRawInput.val(numberValue);
-
-                // Format number as currency (Rupiah)
-                e.target.value = new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
-                }).format(numberValue);
+            // Format harga saat user mengetik
+            $('#harga_barang').on('keyup', function() {
+                let value = $(this).val().replace(/[^,\d]/g, ''); // Hanya angka dan koma
+                $(this).val(formatRupiah(value, 'Rp. '));
             });
+
+            // Fungsi format Rupiah
+            function formatRupiah(angka, prefix) {
+                let numberString = angka.replace(/[^,\d]/g, '').toString();
+                let split = numberString.split(',');
+                let sisa = split[0].length % 3;
+                let rupiah = split[0].substr(0, sisa);
+                let ribuan = split[0].substr(sisa).match(/\d{3}/g);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+                return prefix === undefined ? rupiah : (rupiah ? prefix + rupiah : '');
+            }
         });
     </script>
 @endsection

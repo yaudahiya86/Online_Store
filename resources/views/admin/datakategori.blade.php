@@ -160,64 +160,32 @@
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const url = this.dataset.url;
-
-                // Clear previous form state
-                document.getElementById('formEditKategori').reset();
-
-                // Fetch category data via AJAX
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Kategori tidak ditemukan');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Populate modal form with data
-                        document.getElementById('editNamaKategori').value = data.kategori;
-
-                        // Update form action dynamically
-                        document.getElementById('formEditKategori').action =
-                        `datakategori/update/${id}`;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        Swal.fire('Error', 'Gagal mengambil data kategori', 'error');
-                    });
-            });
-        });
-        document.querySelectorAll('.btn-hapus').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: `Kategori "${name}" akan dihapus secara permanen!`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(`form-hapus-${id}`).submit();
-                    }
-                });
-            });
-        });
-        // Automatically dismiss alerts after 5 seconds
         $(document).ready(function() {
-            setTimeout(function() {
-                $(".auto-dismiss").fadeOut("slow", function() {
-                    $(this).remove();
+            // Tombol Edit Kategori
+            $('.btn-edit').on('click', function() {
+                let url = $(this).data('url'); // URL untuk mendapatkan data kategori berdasarkan ID
+
+                // Lakukan AJAX request untuk mendapatkan data kategori
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        // Isi data ke dalam modal edit
+                        $('#editNamaKategori').val(response.kategori);
+
+                        // Atur action form untuk update kategori
+                        $('#formEditKategori').attr(
+                            'action',
+                            `{{ route('datakategoriupdate', ':id') }}`.replace(':id',
+                                response.id_kategori)
+                        );
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Gagal memuat data kategori', 'error');
+                    },
                 });
-            }, 5000); // 5000ms = 5 seconds
+            });
         });
     </script>
 @endsection

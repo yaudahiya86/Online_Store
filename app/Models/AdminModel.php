@@ -32,13 +32,13 @@ class AdminModel extends Model
     public static function JoinDataBarang()
     {
         return DB::table('barang')
-        ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_barang')
+        ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_kategori')
         ->get();
     }
     public static function JoinDataBarangById($where)
     {
         return DB::table('barang')->where('id_barang', $where)
-        ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_barang')
+        ->join('kategori', 'kategori.id_kategori', '=', 'barang.id_kategori')
         ->first();
     }
     public static function JoinUser()
