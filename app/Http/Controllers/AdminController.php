@@ -255,7 +255,9 @@ class AdminController extends Controller
 
     public function datapesanan()
     {
-        return view("admin.datapesanan");
+        $data = AdminModel::JoinPesanan(1);
+        dd($data);
+        return view("admin.datapesanan", compact('data'));
     }
     public function detailpesanan()
     {
