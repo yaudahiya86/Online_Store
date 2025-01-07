@@ -83,7 +83,7 @@ return new class extends Migration
             $table->id('id_list_pesanan');
             $table->unsignedBigInteger('id_pesanan');
             $table->unsignedBigInteger('id_barang');
-            $table->integer('jumlah_barang_pesanan');
+            $table->integer('jumlah_barang_satuan');
             $table->integer('total_harga_satuan'); // Menggunakan integer untuk harga satuan
             $table->timestamps();
 

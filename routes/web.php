@@ -46,7 +46,7 @@ Route::controller(AdminController::class)
         Route::get('/datapesanan', 'datapesanan')->name('datapesanan');
 
 
-        Route::get('/detailpesanan', 'detailpesanan')->name('detailpesanan');
+        Route::get('/detailpesanan/{id}', 'detailpesanan')->name('detailpesanan');
 
 
         Route::get('/datauser', 'datauser')->name('datauser');

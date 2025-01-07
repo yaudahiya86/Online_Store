@@ -77,15 +77,9 @@
                                 <td>{{$item->expedisi_pengiriman}}</td>
                                 <td>{{$item->total_harga_semua}}</td>
                                 <td>
-                                    <a href="{{ route('detailpesanan') }}" class="btn btn-primary">
+                                    <a href="{{ route('detailpesanan', $item->id_pesanan) }}" class="btn btn-primary">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <button class="btn btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
                                 </td>
                             </tr>
                         @endforeach

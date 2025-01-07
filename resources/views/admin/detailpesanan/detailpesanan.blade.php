@@ -44,16 +44,16 @@
         <a href="{{route('datapesanan')}}" class="btn btn-secondary">Kembali</a>
     </div>
     <div class="card-body">
-            <div class="card p-1 text-center mb-1">
-                <div class="row">
-                    <div class="col">Nama Pemesan : Ergi</div>
-                    <div class="col">Metode Pembayaran : OVO</div>
-                </div>
-                <div class="row">
-                    <div class="col">Tanggal Pesanan : 12-12-2024</div>
-                    <div class="col">Expedisi Pengiriman : JNT</div>
-                </div>
+        <div class="card p-1 text-center mb-1">
+            <div class="row">
+                <div class="col">Nama Pemesan : {{ $pesanan->nama_lengkap }}</div>
+                <div class="col">Metode Pembayaran : {{ $pesanan->metode_pembayaran }}</div>
             </div>
+            <div class="row">
+                <div class="col">Tanggal Pesanan : {{ date('d-m-Y', strtotime($pesanan->tanggal_pembayaran)) }}</div>
+                <div class="col">Expedisi Pengiriman : {{ $pesanan->expedisi_pengiriman }}</div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -67,31 +67,22 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                    <th>No</th>
-                        <th>Nama Barang</th>
-                        <th>Harga</th>
-                        <th>Jumlah Barang</th>
-                        <th>Total Harga</th>
-                        <th>Kategori</th>
-                        <th>Aksi</th>
-                    </tr>
-                </tfoot>
                 <tbody>
+                    @foreach ($barang as $index => $item)
                     <tr>
-                        <td>1.</td>
-                        <td>Bucket</td>
-                        <td>Rp. 150.000</td>
-                        <td>2</td>
-                        <td>Rp. 300.000</td>
-                        <td>Pernikahan</td>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $item->nama_barang }}</td>
+                        <td>Rp. {{ number_format($item->harga_barang, 0, ',', '.') }}</td>
+                        <td>{{ $item->jumlah_barang_satuan }}</td>
+                        <td>Rp. {{ number_format($item->total_harga_satuan, 0, ',', '.') }}</td>
+                        <td>{{ $item->kategori }}</td>
                         <td>
                             <button class="btn btn-primary">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
