@@ -55,5 +55,11 @@ Route::controller(AdminController::class)
         Route::put('/datauser/edit/{id}', 'datauseredit')->name('datauseredit');
         Route::delete('/datauser/hapus/{id}', 'datauserhapus')->name('datauserhapus');
     });
+Route::controller(AdminController::class)
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/beranda', [UserController::class, 'beranda'])->name('beranda');
+        Route::get('/keranjang', [UserController::class, 'keranjang'])->name('keranjang');
+        Route::get('/keranjang/tambah/{id}', [UserController::class, 'tambahkeranjang'])->name('tambahkeranjang');
+    });
 
-Route::get('/beranda', [UserController::class, 'beranda'])->name('beranda');

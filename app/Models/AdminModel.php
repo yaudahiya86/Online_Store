@@ -13,6 +13,28 @@ class AdminModel extends Model
     {
         return DB::table($table)->get();
     }
+    public static function TotalHargaBulan()
+    {
+        $data = DB::table('pesanan')
+            ->select(DB::raw("MONTH(created_at) as bulan"), DB::raw("SUM(total_harga_semua) as total"))
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->pluck('total', 'bulan')
+            ->toArray();
+    
+        // Isi array kosong untuk bulan yang tidak memiliki data
+        $result = array_fill(1, 12, 0);
+        foreach ($data as $bulan => $total) {
+            $result[$bulan] = $total;
+        }
+    
+        return array_values($result);
+    }
+    
+    public static function CountData($table, $where)
+    {
+        return DB::table($table)->where($where)->count();
+    }
     public static function GetDataById($table, $where)
     {
         return DB::table($table)->where($where)->first();
@@ -62,7 +84,8 @@ class AdminModel extends Model
                 'pengiriman.tanggal_menerima',
                 'expedisi_pengiriman.expedisi_pengiriman',
                 'pembayaran.tanggal_pembayaran',
-                'metode_pembayaran.metode_pembayaran'
+                'metode_pembayaran.metode_pembayaran',
+                'pembayaran.status_pembayaran'
             )
             ->get();
     }
@@ -82,7 +105,8 @@ class AdminModel extends Model
                 'pengiriman.tanggal_menerima',
                 'expedisi_pengiriman.expedisi_pengiriman',
                 'pembayaran.tanggal_pembayaran',
-                'metode_pembayaran.metode_pembayaran'
+                'metode_pembayaran.metode_pembayaran',
+                'pembayaran.status_pembayaran'
             )
             ->first();
 

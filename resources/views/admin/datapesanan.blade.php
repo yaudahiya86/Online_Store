@@ -53,6 +53,7 @@
                             <th>Metode Pembayaran</th>
                             <th>Expedisi Pengiriman</th>
                             <th>Total Harga</th>
+                            <th>Status Pembayaran</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -64,6 +65,7 @@
                             <th>Metode Pembayaran</th>
                             <th>Expedisi Pengiriman</th>
                             <th>Total Harga</th>
+                            <th>Status Pembayaran</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
@@ -76,6 +78,7 @@
                                 <td>{{$item->metode_pembayaran}}</td>
                                 <td>{{$item->expedisi_pengiriman}}</td>
                                 <td>{{$item->total_harga_semua}}</td>
+                                <td>{{$item->status_pembayaran}}</td>
                                 <td>
                                     <a href="{{ route('detailpesanan', $item->id_pesanan) }}" class="btn btn-primary">
                                         <i class="fas fa-eye"></i>

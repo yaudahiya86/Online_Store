@@ -51,7 +51,7 @@
             </div>
             <div class="row">
                 <div class="col">Tanggal Pesanan : {{ date('d-m-Y', strtotime($pesanan->tanggal_pembayaran)) }}</div>
-                <div class="col">Expedisi Pengiriman : {{ $pesanan->expedisi_pengiriman }}</div>
+                <div class="col">Expedisi Pengiriman : {{ $pesanan->expedisi_pengiriman }} / {{ $pesanan->resi_pengiriman }}</div>
             </div>
         </div>
         <div class="table-responsive">
@@ -64,7 +64,6 @@
                         <th>Jumlah Barang</th>
                         <th>Total Harga</th>
                         <th>Kategori</th>
-                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,11 +75,6 @@
                         <td>{{ $item->jumlah_barang_satuan }}</td>
                         <td>Rp. {{ number_format($item->total_harga_satuan, 0, ',', '.') }}</td>
                         <td>{{ $item->kategori }}</td>
-                        <td>
-                            <button class="btn btn-primary">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>

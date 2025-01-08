@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -55,11 +54,12 @@ return new class extends Migration
             $table->foreign('id_kategori')->references('id_kategori')->on('kategori')->onDelete('cascade');
         });
 
-         // Cart table
-         Schema::create('keranjang', function (Blueprint $table) {
+        // Cart table
+        Schema::create('keranjang', function (Blueprint $table) {
             $table->id('id_keranjang');
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_barang');
+            $table->unsignedBigInteger('total_barang_satuan');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
@@ -104,10 +104,12 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pesanan');
             $table->unsignedBigInteger('id_metode_pembayaran');
             $table->timestamp('tanggal_pembayaran')->nullable();
+            $table->enum('status_pembayaran', ['Sudah Dibayar', 'Belum Dibayar']);
 
             $table->foreign('id_pesanan')->references('id_pesanan')->on('pesanan')->onDelete('cascade');
             $table->foreign('id_metode_pembayaran')->references('id_metode_pembayaran')->on('metode_pembayaran')->onDelete('cascade');
         });
+
 
         // Shipping Companies table
         Schema::create('expedisi_pengiriman', function (Blueprint $table) {

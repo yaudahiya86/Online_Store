@@ -16,7 +16,25 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view("admin.dashboard");
+        $user = [
+            'id_role' => 2
+        ];
+        $dikemas = [
+            'status_pesanan' => 'Dikemas'
+        ];
+        $dikirim = [
+            'status_pesanan' => 'Dikirim'
+        ];
+        $selesai = [
+            'status_pesanan' => 'Selesai'
+        ];
+        $total['user'] = AdminModel::CountData('users', $user);
+        $total['dikemas'] = AdminModel::CountData('pesanan', $dikemas);
+        $total['dikirim'] = AdminModel::CountData('pesanan', $dikirim);
+        $total['selesai'] = AdminModel::CountData('pesanan', $selesai);
+        $total['total'] = AdminModel::TotalHargaBulan();
+        // dd($total['dikemas']);
+        return view("admin.dashboard", compact('total'));
     }
 
 
@@ -255,7 +273,7 @@ class AdminController extends Controller
 
     public function datapesanan()
     {
-        $data = AdminModel::getJoinPesanan(1);
+        $data = AdminModel::getJoinPesanan();
         // dd($data);
         return view("admin.datapesanan", compact('data'));
     }
