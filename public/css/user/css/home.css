@@ -999,7 +999,6 @@ article:nth-child(8) {
 }
 .card__preci {
   display: block;
-  text-align: center;
 }
 .card__preci--before {
   font-size: var(--h3-font-size);

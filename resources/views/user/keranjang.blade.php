@@ -2,37 +2,38 @@
 @section('title', 'Keranjang')
 @section('content')
     <div class="containerkj">
-        <a href="{{route('beranda')}}" class="back-button"><i class="bx bx-left-arrow-alt"></i> Kembali belanja</a>
+        <a href="{{ route('beranda') }}" class="back-button"><i class="bx bx-left-arrow-alt"></i> Kembali belanja</a>
         <div class="cart-section">
             <div class="cart-items">
                 <h1>Keranjang Belanja</h1>
                 @foreach ($data['keranjang'] as $item)
-                <div class="cart-item">
-                    <input type="checkbox" checked>
-                    <img src="{{'img/barang_img/'.$item->foto_barang}}" alt="Bunga Melati">
-                    <div class="item-details">
-                        <div class="item-text">
-                            <h2>{{Str::limit($item->nama_barang, 12)}}</h2>
-                            <p>{{$item->kategori}}</p>
-                        </div>
-                        <div class="isiconten">
-                            <div class="quantity-container">
-                                <div class="quantity">
-                                    <input type="number" min="1" max="{{$item->stok_barang}}" step="1" value="{{$item->total_barang_satuan}}">
-                                    <div class="quantity-nav">
-                                        <div class="quantity-button quantity-up">+</div>
-                                        <div class="quantity-button quantity-down">−</div>
+                    <div class="cart-item">
+                        <input type="checkbox" checked>
+                        <img src="{{ 'img/barang_img/' . $item->foto_barang }}" alt="Bunga Melati">
+                        <div class="item-details">
+                            <div class="item-text">
+                                <h2>{{ Str::limit($item->nama_barang, 15) }}</h2>
+                                <p>{{ $item->kategori }}</p>
+                            </div>
+                            <div class="isiconten">
+                                <div class="quantity-container">
+                                    <div class="quantity">
+                                        <input type="number" min="1" max="{{ $item->stok_barang }}" step="1"
+                                            value="{{ $item->total_barang_satuan }}">
+                                        <div class="quantity-nav">
+                                            <div class="quantity-button quantity-up">+</div>
+                                            <div class="quantity-button quantity-down">−</div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="item-pricing">
+                                    <span>Rp.500.000</span>
+                                    <small>Rp {{ number_format($item->harga_barang, 0, ',', '.') }} / per item</small>
+                                </div>
+                                <button class="delete"><i class="bx bxs-trash"></i></button>
                             </div>
-                            <div class="item-pricing">
-                                <span>Rp.500.000</span>
-                                <small>Rp {{ number_format($item->harga_barang, 0, ',', '.') }} / per item</small>
-                            </div>
-                            <button class="delete"><i class="bx bxs-trash"></i></button>
                         </div>
                     </div>
-                </div>
                 @endforeach
             </div>
             <div class="cart-summary">
@@ -119,23 +120,6 @@
             <button class="slide-btn next"><i class="bx bx-right-arrow-alt"></i></button>
         </div>
     </div>
-@endsection
-@section('linkcss')
-    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kavoon&family=Righteous&display=swap" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Kavoon&family=Righteous&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.css">
-    <link rel="stylesheet" href="{{ asset('css/user/css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/user/css/keranjang.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/user/css/footer.css') }}">
-    <style>
-        .top-bar.scrolled{
-            background-color: #ffe8df;
-        }
-    </style>
 @endsection
 @section('linkjs')
     <script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.js"></script>
@@ -233,5 +217,31 @@
             });
         });
     </script>
-    
+
+@endsection
+@section('linkcss')
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kavoon&family=Righteous&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Kavoon&family=Righteous&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.css">
+    <link rel="stylesheet" href="{{ asset('css/user/css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/user/css/keranjang.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/user/css/footer.css') }}">
+    <style>
+        .top-bar.scrolled {
+            background-color: #ffe8df;
+        }
+
+        .item-text h2 {
+            display: inline-block;
+            width: 170px;
+            /* Atur panjang yang sesuai */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 @endsection
