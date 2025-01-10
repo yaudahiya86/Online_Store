@@ -76,11 +76,11 @@
                         <img src="{{ asset('img/barang_img/' . $item->foto_barang) }}" alt="">
                     </div>
                     <div class="card__name">
-                        <a href="detailbarang.html">
+                        <a href="/detailbarang/{{$item->id_barang}}">
                             <p>DETAIL BARANG</p>
                         </a>
                     </div>
-                    <a href="detailbarang.html" class="detail-icon">
+                    <a href="/detailbarang/{{$item->id_barang}}" class="detail-icon">
                         <i class="fa-solid fa-ellipsis"></i>
                     </a>
                     <div class="card__precis">

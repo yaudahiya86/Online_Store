@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <link rel="website icon" type="png" href="img/gasos.jpg"> --}}
     @yield('linkcss')
     
@@ -17,7 +18,7 @@
         </div>
         <div class="icons">
             <a href="{{route('keranjang')}}"><i class='bx bx-cart'></i></a>
-            <a href="profil.html"><i class='bx bx-user'></i></a>
+            <a href="{{route('profil', Auth::user()->id)}}"><i class='bx bx-user'></i></a>
         </div>
     </div>
     <nav>

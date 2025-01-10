@@ -55,11 +55,23 @@ Route::controller(AdminController::class)
         Route::put('/datauser/edit/{id}', 'datauseredit')->name('datauseredit');
         Route::delete('/datauser/hapus/{id}', 'datauserhapus')->name('datauserhapus');
     });
+
+
 Route::controller(AdminController::class)
     ->middleware('auth')
     ->group(function () {
         Route::get('/beranda', [UserController::class, 'beranda'])->name('beranda');
+
+        Route::get('/detailbarang/{id}', [UserController::class, 'detailbarang'])->name('detailbarang');
+        Route::post('/detailbarang/tambahkeranjang', [UserController::class, 'detailbarangtambahkeranjang'])->name('detailbarangtambahkeranjang');
+
         Route::get('/keranjang', [UserController::class, 'keranjang'])->name('keranjang');
+        Route::post('/keranjang/update', [UserController::class, 'keranjangupdate'])->name('keranjangupdate');
         Route::get('/keranjang/tambah/{id}', [UserController::class, 'tambahkeranjang'])->name('tambahkeranjang');
+        Route::delete('/keranjang/hapus/{id}', [UserController::class, 'hapuskeranjang'])->name('hapuskeranjang');
+
+        Route::get('/profil/{id}', [UserController::class, 'profil'])->name('profil');
+        Route::post('/profil/gantipp', [UserController::class, 'profilgantipp'])->name('profilgantipp');
+        Route::post('/profil/update', [UserController::class, 'profilupdate'])->name('profilupdate');
     });
 

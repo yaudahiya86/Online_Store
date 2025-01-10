@@ -8,7 +8,7 @@
                 <h1>Keranjang Belanja</h1>
                 @foreach ($data['keranjang'] as $item)
                     <div class="cart-item">
-                        <input type="checkbox" checked>
+                        <input type="checkbox">
                         <img src="{{ 'img/barang_img/' . $item->foto_barang }}" alt="Bunga Melati">
                         <div class="item-details">
                             <div class="item-text">
@@ -19,47 +19,52 @@
                                 <div class="quantity-container">
                                     <div class="quantity">
                                         <input type="number" min="1" max="{{ $item->stok_barang }}" step="1"
-                                            value="{{ $item->total_barang_satuan }}">
+                                            value="{{ $item->total_barang_satuan }}" data-id="{{ $item->id_barang }}"
+                                            readonly>
                                         <div class="quantity-nav">
                                             <div class="quantity-button quantity-up">+</div>
                                             <div class="quantity-button quantity-down">−</div>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="item-pricing">
-                                    <span>Rp.500.000</span>
+                                    <span>Rp
+                                        {{ number_format($item->total_barang_satuan * $item->harga_barang, 0, ',', '.') }}</span>
                                     <small>Rp {{ number_format($item->harga_barang, 0, ',', '.') }} / per item</small>
                                 </div>
-                                <button class="delete"><i class="bx bxs-trash"></i></button>
+                                <button class="delete" data-id="{{ $item->id_barang }}"><i
+                                        class="bx bxs-trash"></i></button>
                             </div>
                         </div>
                     </div>
                 @endforeach
+
             </div>
             <div class="cart-summary">
-                <h3>Masukkan Kupon</h3>
+                {{-- <h3>Masukkan Kupon</h3>
                 <div class="cart-promo">
                     <input type="text" placeholder="Promo Kode">
                     <button>Masukkan</button>
-                </div>
+                </div> --}}
                 <div class="summary">
                     <table class="info-table">
                         <tbody>
                             <tr>
                                 <td>Total Harga</td>
                                 <td>:</td>
-                                <td>Rp.100.000</td>
+                                <td id="total-harga">Rp.0</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <td>Total Pengiriman</td>
                                 <td>:</td>
                                 <td>Rp.100.000</td>
-                            </tr>
-                            <tr class="totalnya2">
+                            </tr> --}}
+                            {{-- <tr class="totalnya2">
                                 <td>Total Harga</td>
                                 <td>:</td>
                                 <td>Rp.100.000</td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
@@ -205,7 +210,18 @@
     <script>
         document.querySelectorAll('.quantity-button').forEach(button => {
             button.addEventListener('click', function() {
-                const input = this.closest('.quantity').querySelector('input[type="number"]');
+                const quantityContainer = this.closest('.quantity-container');
+                const input = quantityContainer.querySelector('input[type="number"]');
+                const itemPricing = quantityContainer.closest('.isiconten').querySelector(
+                    '.item-pricing span');
+                const pricePerItem = parseInt(
+                    quantityContainer.closest('.isiconten').querySelector(
+                        '.item-pricing small')
+                    .innerText
+                    .replace('Rp', '').replace('.', '').replace(',', '').trim(),
+                    10
+                );
+
                 const currentValue = parseInt(input.value, 10);
                 const isIncrement = this.classList.contains('quantity-up');
                 const newValue = isIncrement ? currentValue + 1 : currentValue - 1;
@@ -213,9 +229,125 @@
                 // Set nilai baru, pastikan tetap dalam batas min dan max
                 if (newValue >= input.min && newValue <= input.max) {
                     input.value = newValue;
+
+                    // Perbarui total harga
+                    const newTotal = newValue * pricePerItem;
+                    itemPricing.innerText = `Rp ${newTotal.toLocaleString('id-ID')}`;
+
+                    // Kirim data ke server menggunakan AJAX
+                    const itemId = quantityContainer.closest('.isiconten').getAttribute(
+                        'data-item-id'); // Pastikan ID barang tersedia
+                    updateDatabase(itemId, newValue);
                 }
             });
         });
+
+        // Fungsi untuk mengirim data ke server menggunakan AJAX
+        function updateDatabase(itemId, quantity) {
+            fetch('/keranjang/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content') // Token CSRF Laravel
+                    },
+                    body: JSON.stringify({
+                        itemId,
+                        quantity
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Keranjang berhasil diperbarui');
+                        updateTotalHarga(); // Panggil fungsi untuk memperbarui total keseluruhan
+                    } else {
+                        console.error('Gagal memperbarui keranjang:', data.message);
+                    }
+                })
+                .catch(error => console.error('Terjadi kesalahan:', error));
+        }
+
+
+        document.querySelectorAll('.delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                const cartItem = this.closest('.cart-item');
+
+                // Tampilkan konfirmasi menggunakan SweetAlert
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Item ini akan dihapus dari keranjang.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Jika pengguna menekan "Ya, hapus!"
+                        fetch(`/keranjang/hapus/${itemId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute(
+                                        'content')
+                                }
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    cartItem.remove();
+                                    Swal.fire(
+                                        'Dihapus!',
+                                        'Item berhasil dihapus dari keranjang.',
+                                        'success'
+                                    );
+                                } else {
+                                    Swal.fire(
+                                        'Dihapus!',
+                                        'Item berhasil dihapus dari keranjang.',
+                                        'success'
+                                    ).then(() => {
+                                        // Refresh halaman setelah SweetAlert ditutup
+                                        location.reload();
+                                    });;
+                                }
+                            });
+                    }
+                });
+            });
+        });
+        // Seleksi semua checkbox dan elemen total harga
+        const checkboxes = document.querySelectorAll('.cart-item input[type="checkbox"]');
+        const totalHargaElement = document.getElementById('total-harga');
+
+        // Fungsi untuk menghitung total harga
+        function updateTotalHarga() {
+            let totalHarga = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const cartItem = checkbox.closest('.cart-item');
+                    const priceElement = cartItem.querySelector('.item-pricing span');
+                    const price = parseInt(
+                        priceElement.textContent.replace('Rp', '').replace(/\./g, '').trim()
+                    );
+                    totalHarga += price;
+                }
+            });
+
+            // Update elemen total harga
+            totalHargaElement.textContent = `Rp.${totalHarga.toLocaleString('id-ID')}`;
+        }
+
+        // Tambahkan event listener ke setiap checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotalHarga);
+        });
+
+        // Hitung total harga saat halaman pertama kali dimuat
+        updateTotalHarga();
     </script>
 
 @endsection
@@ -237,7 +369,7 @@
 
         .item-text h2 {
             display: inline-block;
-            width: 170px;
+            width: 160px;
             /* Atur panjang yang sesuai */
             white-space: nowrap;
             overflow: hidden;
