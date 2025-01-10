@@ -19,7 +19,7 @@
                                 <div class="quantity-container">
                                     <div class="quantity">
                                         <input type="number" min="1" max="{{ $item->stok_barang }}" step="1"
-                                            value="{{ $item->total_barang_satuan }}" data-id="{{ $item->id_barang }}"
+                                            value="{{ $item->total_barang_satuan }}" data-id="{{ $item->id_keranjang }}"
                                             readonly>
                                         <div class="quantity-nav">
                                             <div class="quantity-button quantity-up">+</div>
@@ -215,8 +215,7 @@
                 const itemPricing = quantityContainer.closest('.isiconten').querySelector(
                     '.item-pricing span');
                 const pricePerItem = parseInt(
-                    quantityContainer.closest('.isiconten').querySelector(
-                        '.item-pricing small')
+                    quantityContainer.closest('.isiconten').querySelector('.item-pricing small')
                     .innerText
                     .replace('Rp', '').replace('.', '').replace(',', '').trim(),
                     10
@@ -234,22 +233,30 @@
                     const newTotal = newValue * pricePerItem;
                     itemPricing.innerText = `Rp ${newTotal.toLocaleString('id-ID')}`;
 
-                    // Kirim data ke server menggunakan AJAX
-                    const itemId = quantityContainer.closest('.isiconten').getAttribute(
-                        'data-item-id'); // Pastikan ID barang tersedia
-                    updateDatabase(itemId, newValue);
+                    // Ambil itemId dari elemen input yang memiliki data-id
+                    const itemId = input.getAttribute('data-id'); // Perbaikan di sini
+
+                    if (itemId) {
+                        updateDatabase(itemId, newValue); // Kirim itemId yang valid
+                    } else {
+                        console.error('itemId tidak ditemukan');
+                    }
                 }
             });
         });
 
-        // Fungsi untuk mengirim data ke server menggunakan AJAX
+
         function updateDatabase(itemId, quantity) {
+            console.log('Mengirim data ke server:', {
+                itemId,
+                quantity
+            }); // Debug: Log data yang dikirim
+
             fetch('/keranjang/update', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content') // Token CSRF Laravel
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify({
                         itemId,

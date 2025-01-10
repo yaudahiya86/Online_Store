@@ -23,7 +23,7 @@
             <h1 class="username">{{ $data['profil']->nama_lengkap }}</h1>
             <p class="email"><i class="fas fa-envelope"></i> {{ $data['profil']->email }}</p>
             <button class="edit-profile" id="editProfileBtn"><i class="fas fa-user-edit"></i> Edit Profile</button>
-            <a href="histori.html"><button class="edit-profile"><i class="fas fa-history"></i> History</button></a>
+            <a href="{{route('histori')}}"><button class="edit-profile"><i class="fas fa-history"></i> History</button></a>
         </div>
         <div class="profile-details card-prf">
             <h2><i class="fas fa-info-circle"></i> Profile Information</h2>

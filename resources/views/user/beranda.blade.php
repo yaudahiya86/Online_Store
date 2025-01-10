@@ -17,6 +17,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="fullscreen-video-container">
@@ -195,33 +200,7 @@
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                background: '#f0f9ff', // Biru muda pastel
-                iconColor: '#38bdf8', // Biru cerah untuk ikon
-                color: '#1e3a8a', // Teks biru tua
-                backdrop: 'rgba(0, 0, 0, 0.2)', // Latar belakang gelap dengan transparansi 20%
-                showConfirmButton: false,
-                timer: 1500
-            });
-        </script>
-    @endif
 
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: '{{ session('error') }}',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        </script>
-    @endif
     <script>
         const progressCircle = document.querySelector(".autoplay-progress svg");
         const progressContent = document.querySelector(".autoplay-progress span");

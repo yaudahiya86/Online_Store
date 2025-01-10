@@ -73,5 +73,7 @@ Route::controller(AdminController::class)
         Route::get('/profil/{id}', [UserController::class, 'profil'])->name('profil');
         Route::post('/profil/gantipp', [UserController::class, 'profilgantipp'])->name('profilgantipp');
         Route::post('/profil/update', [UserController::class, 'profilupdate'])->name('profilupdate');
+
+        Route::get('/histori', [UserController::class, 'histori'])->name('histori');
     });
 

@@ -101,6 +101,7 @@ body.dark .tab-link.active {
 
 .tab-link i {
     margin-right: 8px;
+    font-size: 20px;
 }
 .tab-link.active {
     background-color: #009ffd;
@@ -219,6 +220,15 @@ body.dark .tab-link.active {
     background-color: #0099ff;
     color: #fff;
 }
+
+.jud {
+    font-size: 27px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-decoration: underline;
+    text-decoration-color: black; 
+}
+
 
 .detail-btn {
     margin-top: 10px;

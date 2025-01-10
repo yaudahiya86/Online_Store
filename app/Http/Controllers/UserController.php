@@ -6,6 +6,7 @@ use App\Models\AdminModel;
 use App\Models\UserModel;
 use Auth;
 use Illuminate\Http\Request;
+use Log;
 use Storage;
 
 class UserController extends Controller
@@ -34,30 +35,30 @@ class UserController extends Controller
         $request->validate([
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max file size: 2MB
         ]);
-    
+
         $user = Auth::user(); // Get the currently authenticated user
         $uploadPath = public_path('img/profiluser');
         $image = $request->file('foto');
         $imageName = time() . '_' . $image->getClientOriginalName(); // Use a timestamp to prevent overwriting
-    
+
         // Delete the old profile picture if it exists
         if ($user->foto && file_exists($uploadPath . '/' . $user->foto)) {
             unlink($uploadPath . '/' . $user->foto); // Remove the old photo
         }
-    
+
         // Move the new photo to the server
         $image->move($uploadPath, $imageName);
-    
+
         // Update the user's profile with the new image name
         $user->foto = $imageName;
         $user->save();
-    
+
         return response()->json([
             'message' => 'Foto profil berhasil diperbarui!',
             'foto' => $imageName // Send the new image path for the frontend to update
         ]);
     }
-    
+
     public function profilupdate(Request $request)
     {
         $user = auth()->user();
@@ -138,9 +139,29 @@ class UserController extends Controller
     }
     public function keranjangupdate(Request $request)
     {
-        return response()->json(['success' => true, 'message' => 'Keranjang diperbarui']);
+        // Debugging untuk melihat data yang diterima
+        Log::info('Data yang diterima:', [
+            'itemId' => $request->itemId,
+            'quantity' => $request->quantity
+        ]);
 
+        $where = [
+            'id_keranjang' => $request->itemId
+        ];
+        $data = [
+            'total_barang_satuan' => $request->quantity
+        ];
+
+        // Pastikan metode UpdateData bekerja dengan benar
+        $updated = UserModel::UpdateData('keranjang', $where, $data);
+
+        if ($updated) {
+            return response()->json(['success' => true, 'message' => 'Keranjang diperbarui']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gagal memperbarui keranjang']);
     }
+
     public function tambahkeranjang($id)
     {
         $userId = Auth::user()->id;
@@ -192,5 +213,9 @@ class UserController extends Controller
         return redirect()->route('beranda')->with('success', 'Barang berhasil ditambahkan ke keranjang.');
     }
 
+    public function histori()
+    {
+        return view('user.histori');
+    }
 
 }
