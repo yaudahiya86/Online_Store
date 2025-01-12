@@ -21,16 +21,16 @@ class AdminModel extends Model
             ->orderBy('bulan', 'asc')
             ->pluck('total', 'bulan')
             ->toArray();
-    
+
         // Isi array kosong untuk bulan yang tidak memiliki data
         $result = array_fill(1, 12, 0);
         foreach ($data as $bulan => $total) {
             $result[$bulan] = $total;
         }
-    
+
         return array_values($result);
     }
-    
+
     public static function CountData($table, $where)
     {
         return DB::table($table)->where($where)->count();
@@ -70,32 +70,32 @@ class AdminModel extends Model
             ->get();
     }
     public static function getJoinPesanan()
-    {
-        // Query untuk mendapatkan data pesanan utama
-        return DB::table('pesanan')
-            ->join('pengiriman', 'pengiriman.id_pesanan', '=', 'pesanan.id_pesanan')
-            ->join('pembayaran', 'pembayaran.id_pesanan', '=', 'pesanan.id_pesanan')
-            ->join('metode_pembayaran', 'metode_pembayaran.id_metode_pembayaran', '=', 'pembayaran.id_metode_pembayaran')
-            ->join('expedisi_pengiriman', 'expedisi_pengiriman.id_expedisi_pengiriman', '=', 'pengiriman.id_expedisi_pengiriman')
-            ->select(
-                'pesanan.*',
-                'pengiriman.resi_pengiriman',
-                'pengiriman.tanggal_pengiriman',
-                'pengiriman.tanggal_menerima',
-                'expedisi_pengiriman.expedisi_pengiriman',
-                'pembayaran.tanggal_pembayaran',
-                'metode_pembayaran.metode_pembayaran',
-                'pembayaran.status_pembayaran'
-            )
-            ->get();
-    }
+{
+    // Query untuk mendapatkan data pesanan utama dan mengurutkan berdasarkan id_pesanan terbaru
+    return DB::table('pesanan')
+        ->join('pengiriman', 'pengiriman.id_pesanan', '=', 'pesanan.id_pesanan')
+        ->join('pembayaran', 'pembayaran.id_pesanan', '=', 'pesanan.id_pesanan')
+        ->join('expedisi_pengiriman', 'expedisi_pengiriman.id_expedisi_pengiriman', '=', 'pengiriman.id_expedisi_pengiriman')
+        ->select(
+            'pesanan.*',
+            'pengiriman.resi_pengiriman',
+            'pengiriman.tanggal_pengiriman',
+            'pengiriman.tanggal_menerima',
+            'expedisi_pengiriman.expedisi_pengiriman',
+            'pembayaran.tanggal_pembayaran',
+            'pembayaran.status_pembayaran',
+            'pembayaran.metode_pembayaran',
+        )
+        ->orderBy('pesanan.id_pesanan', 'desc')  // Mengurutkan berdasarkan id_pesanan terbaru
+        ->get();
+}
+
     public static function getDetailPesananFirst($idPesanan)
     {
         // Query untuk mendapatkan data pesanan utama
         $pesanan = DB::table('pesanan')
             ->join('pengiriman', 'pengiriman.id_pesanan', '=', 'pesanan.id_pesanan')
             ->join('pembayaran', 'pembayaran.id_pesanan', '=', 'pesanan.id_pesanan')
-            ->join('metode_pembayaran', 'metode_pembayaran.id_metode_pembayaran', '=', 'pembayaran.id_metode_pembayaran')
             ->join('expedisi_pengiriman', 'expedisi_pengiriman.id_expedisi_pengiriman', '=', 'pengiriman.id_expedisi_pengiriman')
             ->where('pesanan.id_pesanan', $idPesanan)
             ->select(
@@ -105,7 +105,6 @@ class AdminModel extends Model
                 'pengiriman.tanggal_menerima',
                 'expedisi_pengiriman.expedisi_pengiriman',
                 'pembayaran.tanggal_pembayaran',
-                'metode_pembayaran.metode_pembayaran',
                 'pembayaran.status_pembayaran'
             )
             ->first();

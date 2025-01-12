@@ -7,10 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <link rel="website icon" type="png" href="img/gasos.jpg"> --}}
     @yield('linkcss')
-    
+
     <title>@yield('title')</title>
 </head>
-<body class="kj">
+<body class="kj ck">
     <div class="top-bar">
         <div class="contact-info">
             <i class='bx bx-phone'></i>
@@ -27,7 +27,7 @@
             <span class="logo navLogo">
                 <a href="#">
                     <img src="https://images.tokopedia.net/img/cache/500-square/VqbcmM/2023/2/21/687a2414-b21a-4c01-bbf8-1fceb9410cae.jpg" alt="Logo" class="logo-img">
-                    FLOWER 
+                    FLOWER
                 </a>
             </span>
             <div class="menu">
@@ -37,7 +37,7 @@
                             <img src="https://images.tokopedia.net/img/cache/500-square/VqbcmM/2023/2/21/687a2414-b21a-4c01-bbf8-1fceb9410cae.jpg" alt="Logo" class="logo-img">
                             FLOWER
                         </a>
-                    </span>             
+                    </span>
                     <i class='bx bx-x siderbarClose'></i>
                 </div>
                 <ul class="nav-links">

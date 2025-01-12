@@ -1,78 +1,17 @@
 @extends('layout.user.app')
-@section('title', 'Keranjang')
+@section('title', 'Proses Pembayaran')
 @section('content')
     <div class="containerkj">
-        <a href="{{ route('beranda') }}" class="back-button"><i class="bx bx-left-arrow-alt"></i> Kembali belanja</a>
-        <form action="{{ route('checkoutproses') }}" method="POST">
-            @csrf
-            <div class="cart-section">
-                <div class="cart-items">
-                    <h1>Keranjang Belanja</h1>
-                    @foreach ($data['keranjang'] as $item)
-                        <div class="cart-item">
-                            <!-- Checkbox tunggal -->
-                            <input type="checkbox" name="selected_items[{{ $item->id_barang }}][checked]" value="1">
-
-                            <!-- Input hidden untuk id_barang -->
-                            <input type="hidden" name="selected_items[{{ $item->id_barang }}][id_barang]"
-                                value="{{ $item->id_barang }}">
-                            <input type="hidden" name="selected_items[{{ $item->id_barang }}][id_keranjang]"
-                                value="{{ $item->id_keranjang }}">
-
-                            <!-- Gambar barang -->
-                            <img src="{{ 'img/barang_img/' . $item->foto_barang }}" alt="{{ $item->nama_barang }}">
-
-                            <div class="item-details">
-                                <div class="item-text">
-                                    <h2>{{ Str::limit($item->nama_barang, 15) }}</h2>
-                                    <p>{{ $item->kategori }}</p>
-                                </div>
-                                <div class="isiconten">
-                                    <div class="quantity-container">
-                                        <div class="quantity">
-                                            <!-- Input jumlah barang -->
-                                            <input type="number" name="selected_items[{{ $item->id_barang }}][jumlah]"
-                                                min="1" max="{{ $item->stok_barang }}"
-                                                value="{{ $item->total_barang_satuan }}">
-                                            <div class="quantity-nav" >
-                                                <div class="quantity-button quantity-up" data-id="{{ $item->id_barang }}">+</div>
-                                                <div class="quantity-button quantity-down">−</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="item-pricing">
-                                        <span>Rp
-                                            {{ number_format($item->total_barang_satuan * $item->harga_barang, 0, ',', '.') }}</span>
-                                        <small>Rp {{ number_format($item->harga_barang, 0, ',', '.') }} / per item</small>
-                                    </div>
-                                    <button type="button" class="delete" data-id="{{ $item->id_barang }}"><i
-                                            class="bx bxs-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="cart-summary">
-                    <div class="summary">
-                        <table class="info-table">
-                            <tbody>
-                                <tr>
-                                    <td>Total Harga</td>
-                                    <td>:</td>
-                                    <td id="total-harga">Rp.0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <button type="submit" class="checkout">CHECK OUT</button>
-                </div>
-            </div>
-        </form>
+        <center>
+            <h1>Anda harus Melakukan Pembayaran Sebesar Rp {{ number_format($total_harga_semua, 0, ',', '.') }}</h1>
+        </center>
+        <small>Jika pop up pembayaran tidak muncul silahkan <span id="pay-button">klik disini</span></small>
     </div>
 
 @endsection
 @section('linkjs')
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
     <script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.js"></script>
     <script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -155,70 +94,72 @@
     </script>
     <script>
         document.querySelectorAll('.quantity-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const quantityContainer = this.closest('.quantity-container');
-        const input = quantityContainer.querySelector('input[type="number"]');
-        const itemPricing = quantityContainer.closest('.isiconten').querySelector('.item-pricing span');
-        const pricePerItem = parseInt(
-            quantityContainer.closest('.isiconten').querySelector('.item-pricing small')
-            .innerText
-            .replace('Rp', '').replace('.', '').replace(',', '').trim(),
-            10
-        );
+            button.addEventListener('click', function() {
+                const quantityContainer = this.closest('.quantity-container');
+                const input = quantityContainer.querySelector('input[type="number"]');
+                const itemPricing = quantityContainer.closest('.isiconten').querySelector(
+                    '.item-pricing span');
+                const pricePerItem = parseInt(
+                    quantityContainer.closest('.isiconten').querySelector('.item-pricing small')
+                    .innerText
+                    .replace('Rp', '').replace('.', '').replace(',', '').trim(),
+                    10
+                );
 
-        const currentValue = parseInt(input.value, 10);
-        const isIncrement = this.classList.contains('quantity-up');
-        const newValue = isIncrement ? currentValue + 1 : currentValue - 1;
+                const currentValue = parseInt(input.value, 10);
+                const isIncrement = this.classList.contains('quantity-up');
+                const newValue = isIncrement ? currentValue + 1 : currentValue - 1;
 
-        // Set nilai baru, pastikan tetap dalam batas min dan max
-        if (newValue >= input.min && newValue <= input.max) {
-            input.value = newValue;
+                // Set nilai baru, pastikan tetap dalam batas min dan max
+                if (newValue >= input.min && newValue <= input.max) {
+                    input.value = newValue;
 
-            // Perbarui total harga
-            const newTotal = newValue * pricePerItem;
-            itemPricing.innerText = `Rp ${newTotal.toLocaleString('id-ID')}`;
+                    // Perbarui total harga
+                    const newTotal = newValue * pricePerItem;
+                    itemPricing.innerText = `Rp ${newTotal.toLocaleString('id-ID')}`;
 
-            // Extract itemId from the input name attribute
-            const itemIdMatch = input.name.match(/\[([0-9]+)\]/); // Match the item ID in the name attribute
-            const itemId = itemIdMatch ? itemIdMatch[1] : null;
+                    // Extract itemId from the input name attribute
+                    const itemIdMatch = input.name.match(
+                        /\[([0-9]+)\]/); // Match the item ID in the name attribute
+                    const itemId = itemIdMatch ? itemIdMatch[1] : null;
 
-            if (itemId) {
-                updateDatabase(itemId, newValue); // Kirim itemId yang valid
-            } else {
-                console.error('itemId tidak ditemukan');
-            }
-        }
-    });
-});
+                    if (itemId) {
+                        updateDatabase(itemId, newValue); // Kirim itemId yang valid
+                    } else {
+                        console.error('itemId tidak ditemukan');
+                    }
+                }
+            });
+        });
 
-function updateDatabase(itemId, quantity) {
-    console.log('Mengirim data ke server:', {
-        itemId,
-        quantity
-    }); // Debug: Log data yang dikirim
-
-    fetch('/keranjang/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
+        function updateDatabase(itemId, quantity) {
+            console.log('Mengirim data ke server:', {
                 itemId,
                 quantity
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Keranjang berhasil diperbarui');
-                updateTotalHarga(); // Panggil fungsi untuk memperbarui total keseluruhan
-            } else {
-                console.error('Gagal memperbarui keranjang:', data.message);
-            }
-        })
-        .catch(error => console.error('Terjadi kesalahan:', error));
-}
+            }); // Debug: Log data yang dikirim
+
+            fetch('/keranjang/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        itemId,
+                        quantity
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Keranjang berhasil diperbarui');
+                        updateTotalHarga(); // Panggil fungsi untuk memperbarui total keseluruhan
+                    } else {
+                        console.error('Gagal memperbarui keranjang:', data.message);
+                    }
+                })
+                .catch(error => console.error('Terjadi kesalahan:', error));
+        }
 
 
 
@@ -302,6 +243,47 @@ function updateDatabase(itemId, quantity) {
         // Hitung total harga saat halaman pertama kali dimuat
         updateTotalHarga();
     </script>
+    <script>
+        document.getElementById('pay-button').onclick = function() {
+            // SnapToken acquired from previous step
+            snap.pay('{{ $snapToken }}', {
+                // Optional
+                onSuccess: function(result) {
+                    window.location.href = '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
+                },
+                // Optional
+                onPending: function(result) {
+                    /* You may add your own js here, this is just example */
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                },
+                // Optional
+                onError: function(result) {
+                    /* You may add your own js here, this is just example */
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                }
+            });
+        };
+        // Tambahkan event listener saat halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // SnapToken acquired from previous step
+            snap.pay('{{ $snapToken }}', {
+                // Optional
+                onSuccess: function(result) {
+                    window.location.href = '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
+                },
+                // Optional
+                onPending: function(result) {
+                    /* You may add your own js here, this is just example */
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                },
+                // Optional
+                onError: function(result) {
+                    /* You may add your own js here, this is just example */
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                }
+            });
+        });
+    </script>
 @endsection
 @section('linkcss')
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
@@ -317,6 +299,11 @@ function updateDatabase(itemId, quantity) {
     <style>
         .top-bar.scrolled {
             background-color: #ffe8df;
+        }
+
+        #pay-button {
+            color: blue;
+            text-decoration: underline;
         }
 
         .item-text h2 {

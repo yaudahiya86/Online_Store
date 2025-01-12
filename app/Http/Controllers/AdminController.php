@@ -417,5 +417,19 @@ class AdminController extends Controller
             return response()->json(['message' => 'Failed to delete user'], 500);
         }
     }
+    public function masukkanresi(Request $request, $id)
+    {
+        AdminModel::UpdateData('pengiriman', [
+            'id_pesanan' => $id
+        ],[
+            'resi_pengiriman' => $request->resi
+        ]);
+        AdminModel::UpdateData('pesanan', [
+            'id_pesanan' => $id
+        ],[
+            'status_pesanan' => 'Dikirim'
+        ]);
+        return redirect()->route('detailpesanan', $id)->with('success', 'Berhasil memasukkan resi');
+    }
 
 }

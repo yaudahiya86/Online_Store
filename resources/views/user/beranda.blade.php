@@ -62,7 +62,7 @@
     <div class="produk" id="produk">
         <div class="header-shop">
             <h1 class="title-shop">PRODUK</h1>
-            <div class="menu-produk">
+            {{-- <div class="menu-produk">
                 <div class="title" onclick="f()">KATEGORI PRODUK <span class="fa fa-bars"></span>
                     <div class="arrow"></div>
                 </div>
@@ -72,7 +72,7 @@
                     <p data-content2="perpisahan">Perpisahan</p>
                     <p data-content="kematian">Kematian</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <main class="main bd-grid" id="productContainer">
             @foreach ($data['barang'] as $item)

@@ -1,5 +1,5 @@
 @extends('layout.user.app')
-@section('title', 'Beranda')
+@section('title', 'Histori')
 @section('linkcss')
     <link rel="stylesheet" href="{{ asset('css/user/css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('css/user/css/histori.css') }}">
@@ -22,8 +22,7 @@
                         class="fa-solid fa-backward"></i></i></i> kembali</button></a>
             <div class="user-profile">
                 <div class="profile-bg">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC8h25wRwgsE-D9u-ZHg-awnbvfZemwDGrEw&s"
-                        alt="User Profile" class="profile-img">
+                    <img src="{{ asset('img/profiluser/' . Auth::user()->foto) }}" alt="User Profile" class="profile-img">
                     <div class="profile-info">
                         <h2>{{ Auth::user()->nama_lengkap }}</h2>
                         <p>Selamat datang kembali, lihat pesanan dan riwayat pembelian Anda!</p>
@@ -34,121 +33,90 @@
                 <button class="tab-link active" onclick="openTab(event, 'belumdibayar')">
                     <i class="bx bxs-wallet"></i> Belum Dibayar
                 </button>
-                <button class="tab-link " onclick="openTab(event, 'dikemas')">
-                    <i class="bx bxs-package"></i>Dikemas
+                <button class="tab-link" onclick="openTab(event, 'dikemas')">
+                    <i class="bx bxs-package"></i> Dikemas
                 </button>
-                <button class="tab-link " onclick="openTab(event, 'dikirim')">
-                    <i class="bx bxs-truck"></i>Dikirim
+                <button class="tab-link" onclick="openTab(event, 'dikirim')">
+                    <i class="bx bxs-truck"></i> Dikirim
                 </button>
+                <button class="tab-link" onclick="openTab(event, 'selesai')">
+                    <i class="bx bxs-check-circle"></i> Selesai
+                </button>
+
 
             </div>
             <div id="belumdibayar" class="tab-content" style="display: block;">
                 <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Belum Dibayar</h2>
-                <div class="order-card">
-                    <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
-                        alt="Produk A" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk A</h3>
-                        <p><strong>Jumlah:</strong> 2</p>
-                        <p><strong>Total:</strong> Rp 100.000</p>
-                        <p><strong>Waktu Pesanan:</strong> 10.00 AM, 12 September 2024</p>
-                        <span class="status waiting"><i class="fas fa-clock"></i> Menunggu Pembayaran</span>
-                        <button class="detail-btn" onclick="openDetail('detail-A')">Lihat Detail</button>
+                @foreach ($data['belumdibayar'] as $item)
+                    <div class="order-card">
+                        {{-- <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
+                            alt="Produk A" class="product-img"> --}}
+                        <div class="order-details">
+                            <h3>{{ $item->nama_lengkap }}</h3>
+                            <p><strong>Alamat : </strong>{{ $item->alamat }}</p>
+                            <p><strong>Total : </strong>Rp {{ number_format($item->total_harga_semua, 0, ',', '.') }}</p>
+                            <p><strong>Waktu Pesanan :
+                                </strong>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</p>
+                            <span class="status waiting"><i class="fas fa-clock"></i> Menunggu Pembayaran</span>
+                            <a class="detail-btn" href="{{route('userdetailpesanan', $item->id_pesanan)}}">Lihat Detail</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="order-card">
-                    <img src="https://via.placeholder.com/100" alt="Produk B" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk B</h3>
-                        <p><strong>Jumlah:</strong> 1</p>
-                        <p><strong>Total:</strong> Rp 50.000</p>
-                        <p><strong>Estimasi Pengiriman:</strong> 2 Hari Kerja</p>
-                        <span class="status waiting"><i class="fas fa-clock"></i> Menunggu Pembayaran</span>
-                        <button class="detail-btn" onclick="openDetail('detail-B')">Lihat Detail</button>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            <div id="dikemas" class="tab-content">
-                <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Dikemas</h2>
-                <div class="order-card">
-                    <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
-                        alt="Produk A" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk A</h3>
-                        <p><strong>Jumlah:</strong> 2</p>
-                        <p><strong>Total:</strong> Rp 100.000</p>
-                        <p><strong>Waktu Pesanan:</strong> 10.00 AM, 12 September 2024</p>
-                        <span class="status completed"><i class="bx bxs-box"></i>
-                            </i> Diproses</span>
-                        <button class="detail-btn" onclick="openDetail('detail-A')">Lihat Detail</button>
+            <div id="dikemas" class="tab-content" style="display: block;">
+                <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Sudah Dibayar</h2>
+                @foreach ($data['sudahdibayar'] as $item)
+                    <div class="order-card">
+                        {{-- <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
+                            alt="Produk A" class="product-img"> --}}
+                        <div class="order-details">
+                            <h3>{{ $item->nama_lengkap }}</h3>
+                            <p><strong>Alamat : </strong>{{ $item->alamat }}</p>
+                            <p><strong>Total : </strong>Rp {{ number_format($item->total_harga_semua, 0, ',', '.') }}</p>
+                            <p><strong>Waktu Pesanan :
+                                </strong>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</p>
+                                <span class="status waiting"><i class="fas fa-truck"></i> Menunggu Dikirim</span>
+                            <a class="detail-btn" href="{{route('userdetailpesanan', $item->id_pesanan)}}">Lihat Detail</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="order-card">
-                    <img src="https://via.placeholder.com/100" alt="Produk B" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk B</h3>
-                        <p><strong>Jumlah:</strong> 1</p>
-                        <p><strong>Total:</strong> Rp 50.000</p>
-                        <p><strong>Estimasi Pengiriman:</strong> 2 Hari Kerja</p>
-                        <span class="status completed"><i class="bx bxs-box"></i>
-                            </i> Diproses</span>
-                        <button class="detail-btn" onclick="openDetail('detail-B')">Lihat Detail</button>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            <div id="dikirim" class="tab-content">
+            <div id="dikirim" class="tab-content" style="display: block;">
                 <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Dikirim</h2>
-                <div class="order-card">
-                    <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
-                        alt="Produk A" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk A</h3>
-                        <p><strong>Jumlah:</strong> 2</p>
-                        <p><strong>Total:</strong> Rp 100.000</p>
-                        <p><strong>Waktu Pesanan:</strong> 10.00 AM, 12 September 2024</p>
-                        <span class="status processing"><i class="fas fa-shipping-fast"></i> Dikirim</span>
-                        <button class="detail-btn" onclick="openDetail('detail-A')">Lihat Detail</button>
+                @foreach ($data['dikirim'] as $item)
+                    <div class="order-card">
+                        {{-- <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
+                            alt="Produk A" class="product-img"> --}}
+                        <div class="order-details">
+                            <h3>{{ $item->nama_lengkap }}</h3>
+                            <p><strong>Alamat : </strong>{{ $item->alamat }}</p>
+                            <p><strong>Total : </strong>Rp {{ number_format($item->total_harga_semua, 0, ',', '.') }}</p>
+                            <p><strong>Waktu Pesanan :
+                                </strong>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</p>
+                                <span class="status waiting"><i class="fas fa-truck"></i> Dikirim</span>
+                            <a href="{{route('userdetailpesanan', $item->id_pesanan)}}" class="detail-btn">Lihat Detail</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="order-card">
-                    <img src="https://via.placeholder.com/100" alt="Produk B" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk B</h3>
-                        <p><strong>Jumlah:</strong> 1</p>
-                        <p><strong>Total:</strong> Rp 50.000</p>
-                        <p><strong>Estimasi Pengiriman:</strong> 2 Hari Kerja</p>
-                        <span class="status processing"><i class="fas fa-shipping-fast"></i> Dikirim</span>
-                        <button class="detail-btn" onclick="openDetail('detail-B')">Lihat Detail</button>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            <!-- <div id="history" class="tab-content">
-                <h2>History Pembelian</h2>
-                <div class="order-card">
-                    <img src="https://via.placeholder.com/100" alt="Produk C" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk C</h3>
-                        <p><strong>Jumlah:</strong> 1</p>
-                        <p><strong>Total:</strong> Rp 70.000</p>
-                        <p><strong>Tanggal Pembelian:</strong> 10 Agustus 2024</p>
-                        <button class="detail-btn" onclick="openDetail('detail-C')">Lihat Detail</button>
+            <div id="selesai" class="tab-content" style="display: block;">
+                <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Selesai</h2>
+                @foreach ($data['selesai'] as $item)
+                    <div class="order-card">
+                        {{-- <img src="https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/5/638631bd-edbb-409c-8d4d-e973d06682c8.jpg"
+                            alt="Produk A" class="product-img"> --}}
+                        <div class="order-details">
+                            <h3>{{ $item->nama_lengkap }}</h3>
+                            <p><strong>Alamat : </strong>{{ $item->alamat }}</p>
+                            <p><strong>Total : </strong>Rp {{ number_format($item->total_harga_semua, 0, ',', '.') }}</p>
+                            <p><strong>Waktu Pesanan :
+                                </strong>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</p>
+                                <span class="status processing"><i class="fas fa-check-circle"></i> Selesai</span>
+                            <a class="detail-btn" href="{{route('userdetailpesanan', $item->id_pesanan)}}">Lihat Detail</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="order-card">
-                    <img src="https://via.placeholder.com/100" alt="Produk D" class="product-img">
-                    <div class="order-details">
-                        <h3>Produk D</h3>
-                        <p><strong>Jumlah:</strong> 3</p>
-                        <p><strong>Total:</strong> Rp 150.000</p>
-                        <p><strong>Tanggal Pembelian:</strong> 15 Agustus 2024</p>
-                        <button class="detail-btn" onclick="openDetail('detail-D')">Lihat Detail</button>
-                    </div>
-                </div>
-            </div> -->
+                @endforeach
+            </div>
         </div>
     </div>
     <div id="detail-card" class="detail-card">
@@ -167,6 +135,21 @@
     </div><br><br><br><br><br><br><br>
 @endsection
 @section('linkjs')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                background: '#f0f9ff', // Biru muda pastel
+                iconColor: '#38bdf8', // Biru cerah untuk ikon
+                color: '#1e3a8a', // Teks biru tua
+                backdrop: 'rgba(0, 0, 0, 0.2)', // Latar belakang gelap dengan transparansi 20%
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
     <script>
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;

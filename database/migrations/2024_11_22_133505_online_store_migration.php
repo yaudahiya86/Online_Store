@@ -74,7 +74,7 @@ return new class extends Migration {
             $table->string('alamat');
             $table->string('kode_pos');
             $table->integer('total_harga_semua'); // Menggunakan integer untuk total harga
-            $table->enum('status_pesanan', ['Dikemas', 'Dikirim', 'diterima']);
+            $table->enum('status_pesanan', ['Dikemas', 'Dikirim', 'diterima'])->nullable();
             $table->timestamps();
         });
 
@@ -91,24 +91,19 @@ return new class extends Migration {
             $table->foreign('id_barang')->references('id_barang')->on('barang')->onDelete('cascade');
         });
 
-        // Payment Methods table
-        Schema::create('metode_pembayaran', function (Blueprint $table) {
-            $table->id('id_metode_pembayaran');
-            $table->string('metode_pembayaran');
-            $table->timestamps();
-        });
-
         // Payments table
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id('id_pembayaran');
             $table->unsignedBigInteger('id_pesanan');
-            $table->unsignedBigInteger('id_metode_pembayaran');
-            $table->timestamp('tanggal_pembayaran')->nullable();
-            $table->enum('status_pembayaran', ['Sudah Dibayar', 'Belum Dibayar']);
+            $table->string('snap_kode')->nullable(); // Kode referensi payment gateway
+            $table->text('metode_pembayaran')->nullable(); // Data mentah respons gateway
+            $table->timestamp('tanggal_pembayaran')->nullable(); // Waktu pembayaran selesai
+            $table->timestamp('tanggal_transaksi')->nullable(); // Waktu transaksi dibuat
+            $table->enum('status_pembayaran', ['Sudah Dibayar', 'Belum Dibayar', 'Gagal', 'Pending', 'Refund', 'Expired'])->nullable();
 
             $table->foreign('id_pesanan')->references('id_pesanan')->on('pesanan')->onDelete('cascade');
-            $table->foreign('id_metode_pembayaran')->references('id_metode_pembayaran')->on('metode_pembayaran')->onDelete('cascade');
         });
+
 
 
         // Shipping Companies table
@@ -123,7 +118,7 @@ return new class extends Migration {
             $table->id('id_pengiriman');
             $table->unsignedBigInteger('id_pesanan');
             $table->unsignedBigInteger('id_expedisi_pengiriman');
-            $table->string('resi_pengiriman');
+            $table->string('resi_pengiriman')->nullable();
             $table->timestamp('tanggal_pengiriman')->nullable();
             $table->timestamp('tanggal_menerima')->nullable();
 

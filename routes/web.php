@@ -47,6 +47,7 @@ Route::controller(AdminController::class)
 
 
         Route::get('/detailpesanan/{id}', 'detailpesanan')->name('detailpesanan');
+        Route::post('/masukkanresi/{id}', 'masukkanresi')->name('masukkanresi');
 
 
         Route::get('/datauser', 'datauser')->name('datauser');
@@ -75,5 +76,14 @@ Route::controller(AdminController::class)
         Route::post('/profil/update', [UserController::class, 'profilupdate'])->name('profilupdate');
 
         Route::get('/histori', [UserController::class, 'histori'])->name('histori');
+        Route::get('/user/detailpesanan/{id}', [UserController::class, 'userdetailpesanan'])->name('userdetailpesanan');
+
+        Route::get('/checkout', [UserController::class, 'checkout'])->name('checkout');
+        Route::post('/checkout/proses', [UserController::class, 'checkoutproses'])->name('checkoutproses');
+        Route::get('/checkout/show', [UserController::class, 'checkoutshow'])->name('checkoutshow');
+        Route::get('/checkout/hapus/{id_keranjang}', [UserController::class, 'hapusBarangCheckout'])->name('checkout.hapus');
+        Route::post('/bayar', [UserController::class, 'bayar'])->name('bayar');
+        Route::get('/bayar/proses', [UserController::class, 'bayarproses'])->name('bayarproses');
+        Route::get('/pembayaranberhasil/{id_pesanan}', [UserController::class, 'pembayaranberhasil'])->name('pembayaranberhasil');
     });
 

@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminModel;
 use App\Models\UserModel;
-use Auth;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Log;
-use Storage;
+// use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class UserController extends Controller
 {
@@ -215,7 +220,212 @@ class UserController extends Controller
 
     public function histori()
     {
-        return view('user.histori');
+        $data['belumdibayar'] = UserModel::JoinHistoriPesanan([
+            'status_pembayaran' => 'Belum Dibayar'
+        ]);
+        $data['sudahdibayar'] = UserModel::JoinHistoriPesanan([
+            'status_pembayaran' => 'Sudah Dibayar',
+            'status_pesanan' => null,
+        ]);
+        $data['dikirim'] = UserModel::JoinHistoriPesanan([
+            'status_pembayaran' => 'Sudah Dibayar',
+            'status_pesanan' => 'Dikirim',
+        ]);
+        $data['selesai'] = UserModel::JoinHistoriPesanan([
+            'status_pembayaran' => 'Sudah Dibayar',
+            'status_pesanan' => 'Diterima',
+        ]);
+        // dd($data);
+        return view('user.histori', compact('data'));
     }
 
+
+    public function checkout()
+    {
+        return view('user.checkout');
+    }
+    public function checkoutproses(Request $request)
+    {
+        // Ambil semua data dari input
+        $selectedItems = $request->input('selected_items', []);
+
+        // Filter hanya barang yang dicentang
+        $itemsToCheckout = collect($selectedItems)->filter(function ($item) {
+            return isset($item['checked']) && $item['checked'] == 1;
+        });
+
+        // Jika tidak ada barang yang dipilih, kembalikan pesan error
+        if ($itemsToCheckout->isEmpty()) {
+            return redirect()->back()->with('error', 'Pilih setidaknya satu barang untuk checkout.');
+        }
+
+        // Debug untuk melihat data yang dikirim
+        // dd($itemsToCheckout);
+        session(['checkout_items' => $itemsToCheckout]);
+
+        // Lanjutkan proses, seperti menyimpan ke database
+        return redirect()->route('checkoutshow');
+    }
+    public function checkoutshow()
+    {
+        // Ambil data barang yang ada di session
+        $checkoutItems = session('checkout_items', collect());
+
+        // Jika data tidak ditemukan, kembali ke halaman keranjang
+        if ($checkoutItems->isEmpty()) {
+            return redirect()->route('keranjang')->with('error', 'Tidak ada barang untuk checkout.');
+        }
+
+        // Ambil ID barang dari checkoutItems
+        $ids = $checkoutItems->pluck('id_barang')->toArray();
+
+        // Inisialisasi array untuk menyimpan data barang dan variabel total harga
+        $barangData = [];
+        $totalHarga = 0;
+
+        // Loop untuk mengambil data barang dan kategori untuk setiap ID barang
+        foreach ($checkoutItems as $item) {
+            $id = $item['id_barang']; // ID barang untuk tiap item
+            $keranjangId = $item['id_keranjang']; // ID keranjang
+            $jumlah = $item['jumlah']; // Jumlah barang
+
+            // Ambil data nama barang, harga, foto, dan kategori berdasarkan ID barang
+            $data = UserModel::JoinDataBarangWhere([
+                ['barang.id_barang', '=', $id]
+            ])->first(); // Menggunakan first() karena ID barang unik
+
+            // Gabungkan data barang dengan informasi keranjang dan jumlah
+            if ($data) {
+                $hargaBarang = $data->harga_barang;
+                $subtotal = $jumlah * $hargaBarang; // Hitung subtotal per item
+                $totalHarga += $subtotal; // Tambahkan ke total harga
+
+                $barangData[] = [
+                    'id_keranjang' => $keranjangId,
+                    'jumlah' => $jumlah,
+                    'id_barang' => $data->id_barang,
+                    'nama_barang' => $data->nama_barang,
+                    'nama_kategori' => $data->kategori,
+                    'foto_barang' => $data->foto_barang,
+                    'harga_barang' => $hargaBarang,
+                    'subtotal' => $subtotal, // Menyimpan subtotal per barang
+                ];
+            }
+        }
+
+        // Kirim data barang dan total harga ke view
+        return view('user.checkout', compact('barangData', 'totalHarga'));
+    }
+
+    public function hapusBarangCheckout($id_keranjang)
+    {
+        // Ambil data checkoutItems dari session
+        $checkoutItems = session('checkout_items', collect());
+
+        // Cari item dengan id_keranjang yang sesuai
+        $checkoutItems = $checkoutItems->filter(function ($item) use ($id_keranjang) {
+            return $item['id_keranjang'] != $id_keranjang;
+        });
+
+        // Simpan kembali data checkoutItems ke session
+        session(['checkout_items' => $checkoutItems]);
+
+        // Kembali ke halaman checkout
+        return redirect()->route('checkoutshow');
+    }
+    public function bayar(Request $request)
+    {
+        // dd($request->all());
+        // Set your Merchant Server Key
+        Config::$serverKey = config('midtrans.serverKey');
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        Config::$isProduction = false;
+        // Set sanitization on (default)
+        Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        Config::$is3ds = true;
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => $request->total_harga_semua
+            ),
+            'customer_details' => array(
+                'first_name' => $request->nama_lengkap,
+                'phone' => $request->telephone,
+            )
+        );
+        $snapToken = Snap::getSnapToken($params);
+        $data_pesanan = [
+            'nama_lengkap' => $request->nama_lengkap,
+            'telephone' => $request->telephone,
+            'alamat' => $request->alamat_lengkap,
+            'kode_pos' => $request->kode_pos,
+            'total_harga_semua' => $request->total_harga_semua,
+            'created_at' => Carbon::now('asia/jakarta'),
+            'updated_at' => Carbon::now('asia/jakarta'),
+        ];
+        $id_pesanan = UserModel::InsertDataGetId('pesanan', $data_pesanan);
+        foreach ($request->barang as $barang) {
+            UserModel::InsertData('list_pesanan', [
+                'id_pesanan' => $id_pesanan,
+                'id_barang' => $barang['id_barang'],
+                'jumlah_barang_satuan' => $barang['jumlah_barang'],
+                'total_harga_satuan' => $barang['total_barang_satuan'],
+            ]);
+            $get_barang = UserModel::GetDataById('barang', [
+                'id_barang' => $barang['id_barang']
+            ]);
+            UserModel::UpdateData('barang', [
+                'id_barang' => $barang['id_barang']
+            ], [
+                'stok_barang' => $get_barang->stok_barang - $barang['jumlah_barang']
+            ]);
+            UserModel::deleteData('keranjang', [
+                'id_keranjang' => $barang['id_keranjang']
+            ]);
+        }
+        UserModel::InsertData('pengiriman', [
+            'id_expedisi_pengiriman' => $request->pengiriman,
+            'id_pesanan' => $id_pesanan
+        ]);
+        UserModel::InsertData('pembayaran', [
+            'id_pesanan' => $id_pesanan,
+            'snap_token' => $snapToken,
+        ]);
+        return view('user.prosespembayaran', [
+            'snapToken' => $snapToken,
+            'total_harga_semua' => $request->total_harga_semua,
+            'id_pesanan' => $id_pesanan
+        ]);
+    }
+    public function pembayaranberhasil($id_pesanan)
+    {
+        $data = UserModel::UpdateData('pembayaran',[
+            'id_pesanan' => $id_pesanan
+        ],[
+            'status_pembayaran' => 'Sudah Dibayar',
+            'tanggal_pembayaran' => Carbon::now('asia/jakarta')
+        ]);
+        $data = UserModel::UpdateData('pesanan',[
+            'id_pesanan' => $id_pesanan
+        ],[
+            'status_pesanan' => 'Dikirim',
+        ]);
+        return redirect()->route('histori')->with('success', 'Barang berhasil Dibayar, Silahkan cek pada histori pesanan');
+    }
+    public function userdetailpesanan($id)
+    {
+        $where = [
+            'list_pesanan.id_pesanan' => $id
+        ];
+        $data = UserModel::JoinDetailPesanan($where);
+        // dd($data);
+        return view('user.detailpesanan', compact('data'));
+    }
+
+
+    public function bayarproses()
+    {
+        return view('user.prosespembayaran');
+    }
 }

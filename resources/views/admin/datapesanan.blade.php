@@ -50,7 +50,6 @@
                             <th>No</th>
                             <th>Nama Pemesan</th>
                             <th>Tangga Pesanan</th>
-                            <th>Metode Pembayaran</th>
                             <th>Expedisi Pengiriman</th>
                             <th>Total Harga</th>
                             <th>Status Pembayaran</th>
@@ -62,7 +61,6 @@
                             <th>No</th>
                             <th>Nama Pemesan</th>
                             <th>Tangga Pesanan</th>
-                            <th>Metode Pembayaran</th>
                             <th>Expedisi Pengiriman</th>
                             <th>Total Harga</th>
                             <th>Status Pembayaran</th>
@@ -75,7 +73,6 @@
                                 <td>{{$loop->iteration}}</td>
                                 <td>{{$item->nama_lengkap}}</td>
                                 <td>{{$item->created_at}}</td>
-                                <td>{{$item->metode_pembayaran}}</td>
                                 <td>{{$item->expedisi_pengiriman}}</td>
                                 <td>{{$item->total_harga_semua}}</td>
                                 <td>{{$item->status_pembayaran}}</td>
