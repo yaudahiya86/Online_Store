@@ -1,5 +1,5 @@
 @extends('layout.admin.app')
-@section('title', 'Data Kategori')
+@section('title', 'Data Expedisi')
 @section('content')
     <style>
         /* Menetapkan lebar kolom yang ditentukan di tabel */
@@ -33,8 +33,8 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary h4">Data Kategori</h6>
-            <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahKategori">Tambah Kategori</button>
+            <h6 class="m-0 font-weight-bold text-primary h4">Data Expedisi</h6>
+            <button class="btn btn-success ml-auto" data-toggle="modal" data-target="#tambahKategori">Tambah Expedisi</button>
         </div>
         <div class="card-body">
             @if (session('success'))
@@ -58,41 +58,41 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama kategori</th>
+                            <th>Nama Expedisi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>No</th>
-                            <th>Nama kategori</th>
+                            <th>Nama Expedisi</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach ($data as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->kategori }}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-edit" data-id="{{ $item->id_kategori }}"
-                                        data-url="{{ route('datakategoriedit', $item->id_kategori) }}" data-toggle="modal"
-                                        data-target="#editKategori">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-hapus" data-id="{{ $item->id_kategori }}"
-                                        data-name="{{ $item->kategori }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                    <form id="form-hapus-{{ $item->id_kategori }}"
-                                        action="{{ route('datakategorihapus', $item->id_kategori) }}" method="POST"
-                                        style="display: none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->expedisi_pengiriman }}</td>
+                            <td>
+                                <button class="btn btn-warning btn-edit" data-id="{{ $item->id_expedisi_pengiriman }}"
+                                    data-url="{{ route('dataexpedisiedit', $item->id_expedisi_pengiriman) }}" data-toggle="modal"
+                                    data-target="#editKategori">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-hapus" data-id="{{ $item->id_expedisi_pengiriman }}"
+                                    data-name="{{ $item->expedisi_pengiriman }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <form id="form-hapus-{{ $item->id_expedisi_pengiriman }}"
+                                    action="{{ route('dataexpedisihapus', $item->id_expedisi_pengiriman) }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -101,7 +101,7 @@
     <!-- Modal tambah kategori -->
     <div class="modal fade" id="tambahKategori" tabindex="-1" aria-labelledby="tambahKategoriLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('datakategoritambah') }}" method="POST">
+            <form action="{{ route('dataexpedisitambah') }}" method="POST">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
@@ -112,8 +112,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Nama kategori</label>
-                            <input type="text" name="kategori" class="form-control" id="exampleInputEmail1"
+                            <label for="exampleInputEmail1">Nama Expedisi</label>
+                            <input type="text" name="expedisi" class="form-control" id="exampleInputEmail1"
                                 aria-describedby="emailHelp">
                         </div>
                     </div>
@@ -140,8 +140,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="editNamaKategori">Nama kategori</label>
-                            <input type="text" name="kategori" class="form-control" id="editNamaKategori" required>
+                            <label for="editNamaKategori">Nama Expedisi</label>
+                            <input type="text" name="expedisi" class="form-control" id="editNamaKategori" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -157,35 +157,34 @@
 @endsection
 
 @section('script')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            $('.btn-hapus').on('click', function() {
-                const id = $(this).data('id');
-                const name = $(this).data('name');
-                const formId = `#form-hapus-${id}`;
-
-                // SweetAlert konfirmasi
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: `Kategori "${name}" akan dihapus secara permanen!`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Kirim formulir jika konfirmasi
-                        $(formId).submit();
-                    }
-                });
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $('.btn-hapus').on('click', function () {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const formId = `#form-hapus-${id}`;
+            
+            // SweetAlert konfirmasi
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: `Data ekspedisi "${name}" akan dihapus secara permanen!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim formulir jika konfirmasi
+                    $(formId).submit();
+                }
             });
         });
-    </script>
-
+    });
+</script>
     <script>
         $(document).ready(function() {
             // Tombol Edit Kategori
@@ -198,13 +197,13 @@
                     type: 'GET',
                     success: function(response) {
                         // Isi data ke dalam modal edit
-                        $('#editNamaKategori').val(response.kategori);
+                        $('#editNamaKategori').val(response.expedisi_pengiriman);
 
                         // Atur action form untuk update kategori
                         $('#formEditKategori').attr(
                             'action',
-                            `{{ route('datakategoriupdate', ':id') }}`.replace(':id',
-                                response.id_kategori)
+                            `{{ route('dataexpedisiupdate', ':id') }}`.replace(':id',
+                                response.id_expedisi_pengiriman)
                         );
                     },
                     error: function(xhr) {

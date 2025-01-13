@@ -225,7 +225,7 @@ class UserController extends Controller
         ]);
         $data['sudahdibayar'] = UserModel::JoinHistoriPesanan([
             'status_pembayaran' => 'Sudah Dibayar',
-            'status_pesanan' => null,
+            'status_pesanan' => 'Dikemas',
         ]);
         $data['dikirim'] = UserModel::JoinHistoriPesanan([
             'status_pembayaran' => 'Sudah Dibayar',
@@ -270,6 +270,7 @@ class UserController extends Controller
     {
         // Ambil data barang yang ada di session
         $checkoutItems = session('checkout_items', collect());
+        $expedisi = UserModel::GetData('expedisi_pengiriman');
 
         // Jika data tidak ditemukan, kembali ke halaman keranjang
         if ($checkoutItems->isEmpty()) {
@@ -314,7 +315,7 @@ class UserController extends Controller
         }
 
         // Kirim data barang dan total harga ke view
-        return view('user.checkout', compact('barangData', 'totalHarga'));
+        return view('user.checkout', compact('barangData', 'totalHarga', 'expedisi'));
     }
 
     public function hapusBarangCheckout($id_keranjang)
@@ -400,16 +401,16 @@ class UserController extends Controller
     }
     public function pembayaranberhasil($id_pesanan)
     {
-        $data = UserModel::UpdateData('pembayaran',[
+        $data = UserModel::UpdateData('pembayaran', [
             'id_pesanan' => $id_pesanan
-        ],[
+        ], [
             'status_pembayaran' => 'Sudah Dibayar',
             'tanggal_pembayaran' => Carbon::now('asia/jakarta')
         ]);
-        $data = UserModel::UpdateData('pesanan',[
+        $data = UserModel::UpdateData('pesanan', [
             'id_pesanan' => $id_pesanan
-        ],[
-            'status_pesanan' => 'Dikirim',
+        ], [
+            'status_pesanan' => 'Dikemas',
         ]);
         return redirect()->route('histori')->with('success', 'Barang berhasil Dibayar, Silahkan cek pada histori pesanan');
     }
@@ -421,6 +422,29 @@ class UserController extends Controller
         $data = UserModel::JoinDetailPesanan($where);
         // dd($data);
         return view('user.detailpesanan', compact('data'));
+    }
+    public function pesananditerima($id)
+    {
+        UserModel::UpdateData('pesanan', [
+            'id_pesanan' => $id
+        ], [
+            'status_pesanan' => 'Diterima',
+        ]);
+        UserModel::UpdateData('pengiriman', [
+            'id_pesanan' => $id
+        ], [
+            'tanggal_menerima' => Carbon::now('asia/jakarta'),
+        ]);
+        return redirect()->route('histori')->with('success', 'Pesanan Sudah diterima');
+    }
+    public function bayarnanti($id)
+    {
+        UserModel::UpdateData('pembayaran', [
+            'id_pesanan' => $id
+        ], [
+            'status_pembayaran' => 'Belum Dibayar'
+        ]);
+        return redirect()->route('histori')->with('success', 'Berhasil membuat pesanan, Pembayaran MAX 1Hari');
     }
 
 

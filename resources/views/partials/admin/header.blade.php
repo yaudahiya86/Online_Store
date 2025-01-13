@@ -58,6 +58,12 @@
                     <span>Data User</span>
                 </a>
             </li>
+            <li class="nav-item {{ Route::currentRouteName() == 'dataexpedisi' ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('dataexpedisi') }}">
+                    <i class="fas fa-users"></i>
+                    <span>Data Expedisi</span>
+                </a>
+            </li>
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>

@@ -56,6 +56,10 @@
                     <div class="col">Expedisi Pengiriman : {{ $pesanan->expedisi_pengiriman }} /
                         {{ $pesanan->resi_pengiriman }}</div>
                 </div>
+                <div class="row">
+                    <div class="col">Status Pesanan : {{ $pesanan->status_pesanan }}</div>
+                    <div class="col">Status Pembayaran : {{ $pesanan->status_pembayaran }}</div>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

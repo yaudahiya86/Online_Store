@@ -1,5 +1,5 @@
 @extends('layout.user.app')
-@section('title', 'Beranda')
+@section('title', 'Profil')
 @section('linkcss')
     <link rel="stylesheet" href="{{ asset('css/user/css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('css/user/css/profil.css') }}">

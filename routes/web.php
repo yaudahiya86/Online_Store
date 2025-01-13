@@ -41,6 +41,12 @@ Route::controller(AdminController::class)
         Route::get('/datakategori/edit/{id}', 'datakategoriedit')->name('datakategoriedit');
         Route::put('datakategori/update/${id}', 'datakategoriupdate')->name('datakategoriupdate');
         Route::delete('/datakategori/hapus{id}', 'datakategorihapus')->name('datakategorihapus');
+        
+        Route::get('/dataexpedisi', 'dataexpedisi')->name('dataexpedisi');
+        Route::post('/dataexpedisi/tambah', 'dataexpedisitambah')->name('dataexpedisitambah');
+        Route::get('/dataexpedisi/edit/{id}', 'dataexpedisiedit')->name('dataexpedisiedit');
+        Route::put('dataexpedisi/update/${id}', 'dataexpedisiupdate')->name('dataexpedisiupdate');
+        Route::delete('/dataexpedisi/hapus{id}', 'dataexpedisihapus')->name('dataexpedisihapus');
 
 
         Route::get('/datapesanan', 'datapesanan')->name('datapesanan');
@@ -85,5 +91,7 @@ Route::controller(AdminController::class)
         Route::post('/bayar', [UserController::class, 'bayar'])->name('bayar');
         Route::get('/bayar/proses', [UserController::class, 'bayarproses'])->name('bayarproses');
         Route::get('/pembayaranberhasil/{id_pesanan}', [UserController::class, 'pembayaranberhasil'])->name('pembayaranberhasil');
+        Route::get('/pesananditerima/{id}', [UserController::class, 'pesananditerima'])->name('pesananditerima');
+        Route::get('/bayarnanti/{id}', [UserController::class, 'bayarnanti'])->name('bayarnanti');
     });
 

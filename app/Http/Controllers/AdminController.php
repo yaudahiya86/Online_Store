@@ -270,6 +270,70 @@ class AdminController extends Controller
     }
 
 
+    public function dataexpedisi()
+    {
+        $data = AdminModel::GetData('expedisi_pengiriman');
+        return view("admin.datapengiriman", compact('data'));
+    }
+    public function dataexpedisitambah(Request $request)
+    {
+        $request->validate([
+            'expedisi' => 'required'
+        ]);
+        $data = [
+            'expedisi_pengiriman' => $request->expedisi,
+        ];
+        $cek = AdminModel::GetDataById('expedisi_pengiriman', $data);
+        if ($cek) {
+            return redirect()->back()->with('error', 'Kategori sudah ada');
+        }
+        AdminModel::InsertData('expedisi_pengiriman', $data);
+
+        return redirect()->route('dataexpedisi')->with('success', 'Berhasil menambah Expedisi');
+    }
+    public function dataexpedisiedit($id)
+    {
+        $data = ['id_expedisi_pengiriman' => $id];
+
+        $cek = AdminModel::GetDataById('expedisi_pengiriman', $data);
+
+        if (!$cek) {
+            return response()->json(['error' => 'Expedisi tidak ditemukan'], 404);
+        }
+        return response()->json($cek, 200);
+    }
+    public function dataexpedisiupdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'expedisi' => 'required|string|max:255',
+        ]);
+
+        $data = [
+            'expedisi_pengiriman' => $validated['expedisi'],
+            'updated_at' => Carbon::now('Asia/Jakarta'), // Tambahkan timestamp jika diperlukan
+        ];
+
+        $where = ['id_expedisi_pengiriman' => $id];
+
+        $update = AdminModel::UpdateData('expedisi_pengiriman', $where, $data);
+
+        if ($update) {
+            return redirect()->route('dataexpedisi')->with('success', 'Expedisi berhasil diperbarui');
+        }
+
+        return redirect()->route('dataexpedisi')->with('error', 'Gagal memperbarui expedisi');
+    }
+    public function dataexpedisihapus(Request $request, $id)
+    {
+        $data = [
+            'id_expedisi_pengiriman' => $id
+        ];
+        AdminModel::DeleteData('expedisi_pengiriman', $data);
+
+        return redirect()->route('dataexpedisi')->with('success', 'Berhasil menghapus expedisi');
+    }
+
+
 
     public function datapesanan()
     {
@@ -280,6 +344,7 @@ class AdminController extends Controller
     public function detailpesanan($id)
     {
         $data = AdminModel::getDetailPesananFirst($id);
+        // dd($data);
         return view("admin.detailpesanan.detailpesanan",  [
             'pesanan' => $data['pesanan'],
             'barang' => $data['barang']
@@ -422,7 +487,8 @@ class AdminController extends Controller
         AdminModel::UpdateData('pengiriman', [
             'id_pesanan' => $id
         ],[
-            'resi_pengiriman' => $request->resi
+            'resi_pengiriman' => $request->resi,
+            'tanggal_pengiriman' => Carbon::now('asia/jakarta')
         ]);
         AdminModel::UpdateData('pesanan', [
             'id_pesanan' => $id

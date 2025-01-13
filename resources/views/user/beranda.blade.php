@@ -200,6 +200,21 @@
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                background: '#f0f9ff', // Biru muda pastel
+                iconColor: '#38bdf8', // Biru cerah untuk ikon
+                color: '#1e3a8a', // Teks biru tua
+                backdrop: 'rgba(0, 0, 0, 0.2)', // Latar belakang gelap dengan transparansi 20%
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+    @endif
 
     <script>
         const progressCircle = document.querySelector(".autoplay-progress svg");

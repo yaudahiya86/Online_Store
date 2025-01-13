@@ -49,7 +49,6 @@
                         <img src="{{ asset('img/barang_img/' . $barang['foto_barang']) }}" alt="Product Image">
                         <div class="card-content">
                             <h2>{{ $barang['nama_barang'] }}</h2>
-                            <p>Untuk</p>
                             <p>{{ $barang['nama_kategori'] }}</p>
                         </div>
                         <div class="quantity-container">
@@ -112,7 +111,9 @@
                             <label for="pengiriram">Pengiriman</label>
                             <select id="pengiriram" name="pengiriman" class="select">
                                 <option value="" disabled selected>Pilih Pengiriman</option>
-                                <option value="1">JNT</option>
+                                @foreach ($expedisi as $item)
+                                <option value="{{$item->id_expedisi_pengiriman}}">{{$item->expedisi_pengiriman}}</option>
+                                @endforeach
                             </select>
                         </div>
                 </div>

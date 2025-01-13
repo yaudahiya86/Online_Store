@@ -4,10 +4,10 @@
         <h2>FLOWER</h2>
         <p>Untuk informasi lebih lanjut, hubungi kami:  </p>
         <div class="icon-text">
-          <i class="fa-solid fa-phone-volume"></i> 08512322334
+          <i class="fa-solid fa-phone-volume"></i> 085785822500
         </div>  
         <div class="icon-text2">
-          <i class="fa-regular fa-envelope"></i> bucketnyaindahe@gmail.com
+          <i class="fa-regular fa-envelope"></i> fatimahbouquet@gmail.com
         </div>
         <h3>Ikuti Kita Terus</h3>
         <div class="icons">

@@ -14,7 +14,7 @@
     <div class="top-bar">
         <div class="contact-info">
             <i class='bx bx-phone'></i>
-            <span>No.Telp: +623 323 7890</span>
+            <span>No.Telp: 085785822500</span>
         </div>
         <div class="icons">
             <a href="{{route('keranjang')}}"><i class='bx bx-cart'></i></a>
@@ -25,7 +25,7 @@
         <div class="nav-bar">
             <i class='bx bx-menu sidebarOpen' ></i>
             <span class="logo navLogo">
-                <a href="#">
+                <a href="{{route('beranda')}}">
                     <img src="https://images.tokopedia.net/img/cache/500-square/VqbcmM/2023/2/21/687a2414-b21a-4c01-bbf8-1fceb9410cae.jpg" alt="Logo" class="logo-img">
                     FLOWER
                 </a>

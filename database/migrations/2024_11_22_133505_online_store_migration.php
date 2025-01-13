@@ -95,10 +95,9 @@ return new class extends Migration {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id('id_pembayaran');
             $table->unsignedBigInteger('id_pesanan');
-            $table->string('snap_kode')->nullable(); // Kode referensi payment gateway
+            $table->string('snap_token')->nullable(); // Kode referensi payment gateway
             $table->text('metode_pembayaran')->nullable(); // Data mentah respons gateway
             $table->timestamp('tanggal_pembayaran')->nullable(); // Waktu pembayaran selesai
-            $table->timestamp('tanggal_transaksi')->nullable(); // Waktu transaksi dibuat
             $table->enum('status_pembayaran', ['Sudah Dibayar', 'Belum Dibayar', 'Gagal', 'Pending', 'Refund', 'Expired'])->nullable();
 
             $table->foreign('id_pesanan')->references('id_pesanan')->on('pesanan')->onDelete('cascade');

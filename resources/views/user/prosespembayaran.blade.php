@@ -5,7 +5,10 @@
         <center>
             <h1>Anda harus Melakukan Pembayaran Sebesar Rp {{ number_format($total_harga_semua, 0, ',', '.') }}</h1>
         </center>
-        <small>Jika pop up pembayaran tidak muncul silahkan <span id="pay-button">klik disini</span></small>
+        <div class="text">
+            <small>Jika pop up pembayaran tidak muncul silahkan <span id="pay-button">klik disini</span></small>
+            <a href="{{route('bayarnanti', $id_pesanan)}}" class="pay-button">Bayar Nanti</a>
+        </div>
     </div>
 
 @endsection
@@ -249,7 +252,8 @@
             snap.pay('{{ $snapToken }}', {
                 // Optional
                 onSuccess: function(result) {
-                    window.location.href = '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
+                    window.location.href =
+                        '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
                 },
                 // Optional
                 onPending: function(result) {
@@ -269,7 +273,8 @@
             snap.pay('{{ $snapToken }}', {
                 // Optional
                 onSuccess: function(result) {
-                    window.location.href = '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
+                    window.location.href =
+                        '{{ route('pembayaranberhasil', ['id_pesanan' => $id_pesanan]) }}';
                 },
                 // Optional
                 onPending: function(result) {
@@ -297,10 +302,18 @@
     <link rel="stylesheet" href="{{ asset('css/user/css/keranjang.css') }}">
     <link rel="stylesheet" href="{{ asset('css/user/css/footer.css') }}">
     <style>
+        .text{
+            display: flex;
+            justify-content: space-between;
+        }
         .top-bar.scrolled {
             background-color: #ffe8df;
         }
 
+        .pay-button {
+            color: blue;
+            text-decoration: underline;
+        }
         #pay-button {
             color: blue;
             text-decoration: underline;
