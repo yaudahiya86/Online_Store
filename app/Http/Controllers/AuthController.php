@@ -40,7 +40,7 @@ class AuthController extends Controller
             if ($user->id_role == 1) {
                 return redirect()->route('dashboard')->with('success', 'Selamat datang! Anda login sebagai admin');
             } elseif ($user->id_role == 2) {
-                return redirect();
+                return redirect()->route('beranda');
             } else {
                 // Jika id_role tidak dikenali
                 Auth::logout();
@@ -90,5 +90,20 @@ class AuthController extends Controller
 
         // Redirect ke halaman login atau halaman lain
         return redirect('/')->with('success', 'Anda Berhasil Log Out.');
+    }
+
+    public function logoutuser()
+    {
+        // Logout user
+        Auth::logout();
+
+        // Invalidasi sesi pengguna
+        session()->invalidate();
+
+        // Regenerasi token CSRF untuk keamanan
+        session()->regenerateToken();
+
+        // Redirect ke halaman login atau halaman lain
+        return redirect('/')->with('success', 'Anda berhasil log out.');
     }
 }

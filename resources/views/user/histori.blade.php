@@ -63,7 +63,7 @@
                     </div>
                 @endforeach
             </div>
-            <div id="dikemas" class="tab-content" style="display: block;">
+            <div id="dikemas" class="tab-content">
                 <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Sudah Dibayar</h2>
                 @foreach ($data['sudahdibayar'] as $item)
                     <div class="order-card">
@@ -81,7 +81,7 @@
                     </div>
                 @endforeach
             </div>
-            <div id="dikirim" class="tab-content" style="display: block;">
+            <div id="dikirim" class="tab-content">
                 <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Dikirim</h2>
                 @foreach ($data['dikirim'] as $item)
                     <div class="order-card">
@@ -99,7 +99,7 @@
                     </div>
                 @endforeach
             </div>
-            <div id="selesai" class="tab-content" style="display: block;">
+            <div id="selesai" class="tab-content">
                 <h2 class="jud"><i class="bx bxs-send"></i>Pesanan Selesai</h2>
                 @foreach ($data['selesai'] as $item)
                     <div class="order-card">

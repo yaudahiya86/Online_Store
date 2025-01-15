@@ -45,6 +45,7 @@
                     <li><a href="#" class="active">Produk</a></li>
                     <li><a href="#" class="active2">Tentang Kami</a></li>
                     <li><a href="#" class="active3">Kontak Kami</a></li>
+                    <li><a href="{{route('logoutuser')}}" class="active3">Log Out</a></li>
                 </ul>
             </div>
             <div class="darkLight-searchBox">

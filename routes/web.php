@@ -21,6 +21,7 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login/submit', [AuthController::class, 'loginsubmit'])->name('loginsubmit');
 Route::post('/register/submit', [AuthController::class, 'registersubmit'])->name('registersubmit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logoutuser', [AuthController::class, 'logoutuser'])->name('logoutuser');
 
 Route::controller(AdminController::class)
     ->prefix('admin')
@@ -41,7 +42,7 @@ Route::controller(AdminController::class)
         Route::get('/datakategori/edit/{id}', 'datakategoriedit')->name('datakategoriedit');
         Route::put('datakategori/update/${id}', 'datakategoriupdate')->name('datakategoriupdate');
         Route::delete('/datakategori/hapus{id}', 'datakategorihapus')->name('datakategorihapus');
-        
+
         Route::get('/dataexpedisi', 'dataexpedisi')->name('dataexpedisi');
         Route::post('/dataexpedisi/tambah', 'dataexpedisitambah')->name('dataexpedisitambah');
         Route::get('/dataexpedisi/edit/{id}', 'dataexpedisiedit')->name('dataexpedisiedit');
